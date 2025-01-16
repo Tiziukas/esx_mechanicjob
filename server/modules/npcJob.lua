@@ -71,7 +71,7 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
         return
     end
 
-    local playerCoords = GetEntityCoords(GetPlayerPed(_source))
+    local playerCoords = GetEntityCoords(GetESX.PlayerData.ped(_source))
 
     if currentJob.type == 'repair' then
         distance = #(playerCoords - vec3(currentJob.vehicleCoords.x, currentJob.vehicleCoords.y, currentJob.vehicleCoords.z))
@@ -84,10 +84,10 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
         return
     end
 
-    --if jobCooldowns[_source] and jobCooldowns[_source] > os.time() then
-    --    dropPlayer(_source, "Cooldown breached.")
-    --    return
-    --end
+    if jobCooldowns[_source] and jobCooldowns[_source] > os.time() then
+        dropPlayer(_source, "Cooldown breached.")
+        return
+    end
 
     jobCooldowns[_source] = os.time() + JOB_COOLDOWN_TIME
 

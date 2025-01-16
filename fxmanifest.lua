@@ -2,9 +2,9 @@ fx_version 'adamant'
 
 game 'gta5'
 
-description 'Mechanic job'
+description 'Allows players to RP as a mechanic'
 lua54 'yes'
-version '1.0'
+version '2.0'
 
 shared_scripts {
     '@es_extended/imports.lua'
@@ -41,4 +41,5 @@ client_scripts {
 dependencies {
     'es_extended',
     'esx_billing'
+    --'esx_textui' add this into release
 }

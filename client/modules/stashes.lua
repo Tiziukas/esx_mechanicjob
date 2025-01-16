@@ -2,87 +2,85 @@ local mechanicZones <const> = Config.MechanicZones
 local stashPoints = {}
 
 local function OpenPutStocksMenu()
-    ESX.TriggerServerCallback('esx_mechanicjob:getPlayerInventory', function(inventory)
-        local elements = {
-            { label = 'Inventory', icon = 'fas fa-box', value = nil, type = 'header' }
-        }
+    local inventory = ESX.AwaitServerCallback('esx_mechanicjob:getPlayerInventory')
+    local elements = {
+        { label = 'Inventory', icon = 'fas fa-box', value = nil, type = 'header' }
+    }
 
-        for _, item in ipairs(inventory.items) do
-            if item.count > 0 then
-                table.insert(elements, {
-                    label = item.label .. ' x' .. item.count,
-                    value = item.name,
-                    type = 'item_standard'
-                })
-            end
+    for _, item in ipairs(inventory.items) do
+        if item.count > 0 then
+            table.insert(elements, {
+                label = item.label .. ' x' .. item.count,
+                value = item.name,
+                type = 'item_standard'
+            })
         end
+    end
 
-        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'put_stock_items', {
-            title = 'Put Items in Stash',
-            align = 'top-left',
-            elements = elements
-        }, function(data, menu)
-            local itemName = data.current.value
+    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'put_stock_items', {
+        title = 'Put Items in Stash',
+        align = 'top-left',
+        elements = elements
+    }, function(data, menu)
+        local itemName = data.current.value
 
-            ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'put_stock_amount', {
-                title = 'Amount to Deposit'
-            }, function(data2, menu2)
-                local count = tonumber(data2.value)
+        ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'put_stock_amount', {
+            title = 'Amount to Deposit'
+        }, function(data2, menu2)
+            local count = tonumber(data2.value)
 
-                if count == nil or count <= 0 then
-                    ESX.ShowNotification('Bad Quantity')
-                else
-                    ESX.CloseMenu()
-                    TriggerServerEvent('esx_mechanicjob:putStockItems', itemName, count)
-                    Wait(1000)
-                    OpenPutStocksMenu()
-                end
-            end, function(data2, menu2)
-                menu2.close()
-            end)
-
-        end, function(data, menu)
-            menu.close()
+            if count == nil or count <= 0 then
+                ESX.ShowNotification('Bad Quantity')
+            else
+                ESX.CloseMenu()
+                TriggerServerEvent('esx_mechanicjob:putStockItems', itemName, count)
+                Wait(1000)
+                OpenPutStocksMenu()
+            end
+        end, function(data2, menu2)
+            menu2.close()
         end)
+
+    end, function(data, menu)
+        menu.close()
     end)
 end
 
 local function OpenGetStocksMenu()
-    ESX.TriggerServerCallback('esx_mechanicjob:getStockItems', function(items)
-        local elements = {
-            { unselectable = true, icon = 'fas fa-box', title = 'Mech stock' }
+    local items = ESX.AwaitServerCallback('esx_mechanicjob:getStockItems')
+    local elements = {
+        { unselectable = true, icon = 'fas fa-box', title = 'Mech stock' }
+    }
+
+    for _, item in ipairs(items) do
+        table.insert(elements, {
+            icon = 'fas fa-box',
+            title = 'x' .. item.count .. ' ' .. item.label,
+            value = item.name
+        })
+    end
+
+    ESX.OpenContext("right", elements, function(menu, element)
+        local itemName = element.value
+
+        local elements2 = {
+            { unselectable = true, icon = 'fas fa-box', title = element.title },
+            { title = 'Amount', input = true, inputType = 'number', inputMin = 1, inputMax = 100, inputPlaceholder = 'Amount to withdraw..' },
+            { icon = 'fas fa-check-double', title = 'Confirm', value = 'confirm' }
         }
 
-        for _, item in ipairs(items) do
-            table.insert(elements, {
-                icon = 'fas fa-box',
-                title = 'x' .. item.count .. ' ' .. item.label,
-                value = item.name
-            })
-        end
+        ESX.OpenContext("right", elements2, function(menu2, element2)
+            local count = tonumber(menu2.eles[2].inputValue)
 
-        ESX.OpenContext("right", elements, function(menu, element)
-            local itemName = element.value
+            if count == nil then
+                ESX.ShowNotification('Invalid quantity')
+            else
+                ESX.CloseContext()
+                TriggerServerEvent('esx_mechanicjob:getStockItem', itemName, count)
 
-            local elements2 = {
-                { unselectable = true, icon = 'fas fa-box', title = element.title },
-                { title = 'Amount', input = true, inputType = 'number', inputMin = 1, inputMax = 100, inputPlaceholder = 'Amount to withdraw..' },
-                { icon = 'fas fa-check-double', title = 'Confirm', value = 'confirm' }
-            }
-
-            ESX.OpenContext("right", elements2, function(menu2, element2)
-                local count = tonumber(menu2.eles[2].inputValue)
-
-                if count == nil then
-                    ESX.ShowNotification('Invalid quantity')
-                else
-                    ESX.CloseContext()
-                    TriggerServerEvent('esx_mechanicjob:getStockItem', itemName, count)
-
-                    Wait(1000)
-                    OpenGetStocksMenu()
-                end
-            end)
+                Wait(1000)
+                OpenGetStocksMenu()
+            end
         end)
     end)
 end

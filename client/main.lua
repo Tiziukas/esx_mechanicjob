@@ -1,9 +1,18 @@
-ESX.RegisterClientCallback('esx_mechanicjob:client:checkForVehicle', function(cb)
-    local playerPed = ESX.PlayerData.ped
-    local playerCoords = GetEntityCoords(playerPed)
+local function ReturnNearbyVehicle()
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
-    if vehicle == -1 then cb(false) end
+    if vehicle == -1 then return false end
+    return vehicle
+end
 
+ESX.RegisterClientCallback('esx_mechanicjob:client:checkForVehicle', function(cb)
+    local vehicle = ReturnNearbyVehicle()
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+    local vehicleCoords = GetEntityCoords(vehicle)
+    local distance = #(playerCoords - vehicleCoords)
+    if distance >= 5.0 then
+        cb(false)
+    end
     cb(vehicle)
 end)
 
@@ -27,9 +36,16 @@ end)
 
 
 local function ImpoundVehicle()
-    local playerPed = ESX.PlayerData.ped
-    local playerCoords = GetEntityCoords(playerPed)
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
+    
+    if vehicle then
+        local vehicleCoords = GetEntityCoords(vehicle)
+        local distance = #(playerCoords - vehicleCoords)
+        if distance >= 5.0 then
+            return "no close vehicle"
+        end
+    end
 
     ESX.Progressbar("Impound Vehicle", 5000, {
         FreezePlayer = true,
@@ -45,8 +61,7 @@ local function ImpoundVehicle()
 end
 
 local function BreakVehicle()
-    local playerPed = ESX.PlayerData.ped
-    local playerCoords = GetEntityCoords(playerPed)
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
 
     ESX.Progressbar("Breaking into the vehicle", 5000, {
@@ -64,8 +79,7 @@ local function BreakVehicle()
 end
 
 local function FixVehicle()
-    local playerPed = ESX.PlayerData.ped
-    local playerCoords = GetEntityCoords(playerPed)
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
 
     ESX.Progressbar("Fixing vehicle", 5000, {
@@ -84,8 +98,7 @@ local function FixVehicle()
 end
 
 local function CleanVehicle()
-    local playerPed = ESX.PlayerData.ped
-    local playerCoords = GetEntityCoords(playerPed)
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
 
     ESX.Progressbar("Cleaning the vehicle", 5000, {
@@ -96,9 +109,9 @@ local function CleanVehicle()
             lib = "low_car_sex_to_prop_p2_player"
         },
         onFinish = function()
-            WashDecalsFromVehicle(vehicle, playerPed, 1.0)
+            WashDecalsFromVehicle(vehicle, ESX.PlayerData.ped, 1.0)
             SetVehicleDirtLevel(vehicle, 0.1)
-            ClearPedTasksImmediately(playerPed)
+            ClearPedTasksImmediately(ESX.PlayerData.ped)
         end
     })
 end

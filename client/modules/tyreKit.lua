@@ -8,8 +8,8 @@ local tireIndices = {
 }
 
 local function getNearestTire(vehicle)
-    local playerPed = PlayerPedId()
-    local playerCoords = GetEntityCoords(playerPed)
+    local ESX.PlayerData.ped = ESX.PlayerData.pedId()
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local closestTireIndex = nil
     local closestDistance = math.huge
     local closestTirePos = nil
@@ -39,8 +39,7 @@ local function repairTire(vehicle, tireIndex)
 end
 
 RegisterNetEvent('esx_mechanicjob:client:useTireKit', function()
-    local playerPed = ESX.PlayerData.ped
-    local playerCoords = GetEntityCoords(playerPed)
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
 
     local nearestTireIndex, nearestTirePos = getNearestTire(vehicle)
@@ -52,10 +51,10 @@ RegisterNetEvent('esx_mechanicjob:client:useTireKit', function()
     local offset = vector3(0.5, 0, 0)
     local inFrontOfTire = nearestTirePos + GetOffsetFromEntityInWorldCoords(vehicle, offset)
 
-    TaskGoStraightToCoord(playerPed, inFrontOfTire.x, inFrontOfTire.y, inFrontOfTire.z, 1.0, -1, 0.0, 0.0)
+    TaskGoStraightToCoord(ESX.PlayerData.ped, inFrontOfTire.x, inFrontOfTire.y, inFrontOfTire.z, 1.0, -1, 0.0, 0.0)
 
     local timeout = GetGameTimer() + 10000
-    while #(GetEntityCoords(playerPed) - inFrontOfTire) > 1.5 do
+    while not IsEntityAtCoord(ESX.PlayerData.ped, inFrontOfTire.x, inFrontOfTire.y, inFrontOfTire.z, 5.0, 5.0, 5.0, false, true, 0) do
         Wait(100)
         if GetGameTimer() > timeout then
             print("Could not reach tire position")
@@ -63,7 +62,7 @@ RegisterNetEvent('esx_mechanicjob:client:useTireKit', function()
         end
     end
 
-    ClearPedTasks(playerPed)
+    ClearPedTasks(ESX.PlayerData.ped)
     ESX.Progressbar("repairing_tire", 5000, {
         FreezePlayer = true,
         animation = {

@@ -16,10 +16,9 @@ end
 
 
 local function ResetToCivilianClothes()
-    ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)
-        TriggerEvent('skinchanger:loadSkin', skin)
-        ESX.ShowNotification('You changed back into your civilian clothes.')
-    end)
+    local skin = ESX.AwaitServerCallback('esx_skin:getPlayerSkin')
+    TriggerEvent('skinchanger:loadSkin', skin)
+    ESX.ShowNotification('You changed back into your civilian clothes.')
 end
 
 

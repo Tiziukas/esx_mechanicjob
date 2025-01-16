@@ -1,57 +1,43 @@
-# esx_society
-
-Society management for ESX. Adds employee management (hire, fire, promote / demote, change salary), society bank accounts and money washing. It's crucial that this script gets started before all resources that utilize societies do, or else many things will go wrong.
+<h1 align='center'>[ESX] Mechanicjob</a></h1><p align='center'><b><a href='https://discord.esx-framework.org/'>Discord</a> - <a href='https://documentation.esx-framework.org/legacy/installation'>Documentation</a></b></h5>
 
 ## Requirements
-- [cron](https://github.com/esx-framework/esx-legacy/tree/main/%5Besx%5D/cron)
-- [esx_addonaccount](https://github.com/esx-framework/esx-legacy/tree/main/%5Besx_addons%5D/esx_addonaccount)
+
+* Auto mode
+  * No need to download another resource
+
+* Player management (billing and boss actions)
+  * [esx_society](https://github.com/esx-framework/esx_society)
+  * [esx_billing](https://github.com/esx-framework/esx_billing)
 
 ## Download & Installation
 
 ### Using [fvm](https://github.com/qlaffont/fvm-installer)
 ```
-fvm install --save --folder=esx esx-framework/esx_society
+fvm install --save --folder=esx esx-framework/esx_mechanicjob
 ```
 
 ### Using Git
 ```
 cd resources
-git clone https://github.com/esx-framework/esx_society [esx]/esx_society
+git clone https://github.com/esx-framework/esx_mechanicjob [esx]/esx_mechanicjob
 ```
 
 ### Manually
-- Download https://github.com/esx-framework/esx_society/archive/master.zip
+- Download https://github.com/esx-framework/esx_mechanicjob/archive/master.zip
 - Put it in the `[esx]` directory
 
 ## Installation
-- Import `esx_society.sql` in your database
-- Add this in your `server.cfg`:
+- Import `esx_mechanicjob.sql` in your database
+- If you want player management you have to set `Config.EnablePlayerManagement` to `true` in `config.lua`
+- Add this to your `server.cfg`:
 
 ```
-start esx_society
-```
-
-## Explanation
-ESX Society works with addon accounts named 'society_xxx', for example 'society_taxi' or 'society_realestateagent'. If you job grade is 'boss' the society money will be displayed in your hud.
-
-## Usage
-```lua
-local society = 'taxi'
-local amount  = 100
-
-TriggerServerEvent('esx_society:withdrawMoney', society, amount)
-TriggerServerEvent('esx_society:depositMoney', society, amount)
-TriggerServerEvent('esx_society:washMoney', society, amount)
-
-
-TriggerEvent('esx_society:openBossMenu', society, function (menu)
-	ESX.CloseContext() 
-end, {wash = false}) -- set custom options, e.g disable washing
+start esx_mechanicjob
 ```
 
 # Legal
 ### License
-esx_society - societies for ESX
+esx_mechanicjob - mechanic job for ESX
 
 Copyright (C) 2015-2024 Jérémie N'gadi
 

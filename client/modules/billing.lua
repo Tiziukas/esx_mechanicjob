@@ -52,31 +52,30 @@ end
 
 
 local function ViewUnpaidBills()
-    ESX.TriggerServerCallback('esx_mechanicjob:server:getSocietyBillsWithNames', function(bills)
-        local elements = {}
-        for i=1, #bills, 1 do
-            table.insert(elements, {
-                label = bills[i].fullName .. ' - $' .. bills[i].amount,
-                value = bills[i].id
-            })
+    local bills = ESX.AwaitServerCallback('esx_mechanicjob:server:getSocietyBillsWithNames', 'society_mechanic')
+    local elements = {}
+    for i=1, #bills, 1 do
+        table.insert(elements, {
+            label = bills[i].fullName .. ' - $' .. bills[i].amount,
+            value = bills[i].id
+        })
+    end
+
+    ESX.UI.Menu.Open(
+        'default', GetCurrentResourceName(), 'unpaid_bills',
+        {
+            title    = 'Unpaid Bills',
+            align    = 'top-right',
+            elements = elements
+        },
+        function(data, menu)
+            ESX.ShowNotification('Selected Bill ID: ' .. data.current.value)
+
+        end,
+        function(data, menu)
+            menu.close()
         end
-
-        ESX.UI.Menu.Open(
-            'default', GetCurrentResourceName(), 'unpaid_bills',
-            {
-                title    = 'Unpaid Bills',
-                align    = 'top-right',
-                elements = elements
-            },
-            function(data, menu)
-                ESX.ShowNotification('Selected Bill ID: ' .. data.current.value)
-
-            end,
-            function(data, menu)
-                menu.close()
-            end
-        )
-    end, 'society_mechanic')
+    )
 end
 
 
