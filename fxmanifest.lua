@@ -2,29 +2,43 @@ fx_version 'adamant'
 
 game 'gta5'
 
-description 'Allows players to RP as a mechanic (repair and modify vehicles)'
+description 'Mechanic job'
 lua54 'yes'
 version '1.0'
-legacyversion '1.9.1'
 
-shared_script '@es_extended/imports.lua'
-
-client_scripts {
-	'@es_extended/locale.lua',
-	'locales/*.lua',
-	'config.lua',
-	'client/main.lua'
+shared_scripts {
+    '@es_extended/imports.lua'
 }
 
 server_scripts {
-	'@es_extended/locale.lua',
-	'locales/*.lua',
-	'config.lua',
-	'server/main.lua'
+    '@oxmysql/lib/MySQL.lua',
+    '@es_extended/locale.lua',
+    'locales/*.lua',
+    'config.lua',
+    'server/main.lua',
+    'server/modules/billing.lua',
+    'server/modules/npcJob.lua',
+    'server/modules/repairKit.lua',
+    'server/modules/tyreKit.lua',
+    'server/modules/props.lua',
+    'npcLocations.lua'
+
+}
+
+client_scripts {
+    '@es_extended/locale.lua',
+    'locales/*.lua',
+    'config.lua',
+    'client/main.lua',
+    'client/modules/billing.lua',
+    'client/modules/cloakroom.lua',
+    'client/modules/npcJob.lua',
+    'client/modules/repairKit.lua',
+    'client/modules/tyreKit.lua',
+    'client/modules/props.lua',
 }
 
 dependencies {
-	'es_extended',
-	'esx_society',
-	'esx_billing'
+    'es_extended',
+    'esx_billing'
 }
