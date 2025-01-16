@@ -48,7 +48,7 @@ local function OpenCloakroomMenu()
     )
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
     for zoneName, zoneData in pairs(mechanicZones) do
         local cloakroomConfig <const> = zoneData.cloakroom
         local location <const>  = cloakroomConfig.location

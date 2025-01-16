@@ -79,7 +79,7 @@ local function SpawnVehicle(coords, model)
 end
 
 local function MonitorRepair()
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while true do
             Wait(1000)
             if GetVehicleEngineHealth(vehicle) > 950.0 then
