@@ -1,5 +1,4 @@
 ESX.RegisterServerCallback('esx_mechanicjob:server:getSocietyBillsWithNames', function(source, cb, society)
-
     local result = MySQL.query.await([[
         SELECT b.identifier, b.amount, b.id, b.label, u.firstname, u.lastname
         FROM billing b

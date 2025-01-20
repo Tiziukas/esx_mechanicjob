@@ -112,7 +112,7 @@ local function OpenMechanicStashMenu()
     )
 end
 
-CreateThread(function()
+Citizen.CreateThread(function()
     for zoneName, zoneData in pairs(mechanicZones) do
         local stashConfig <const> = zoneData.mechanicStash
         local stashLocation <const> = stashConfig.location

@@ -8,7 +8,6 @@ local tireIndices = {
 }
 
 local function getNearestTire(vehicle)
-    local ESX.PlayerData.ped = ESX.PlayerData.pedId()
     local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local closestTireIndex = nil
     local closestDistance = math.huge

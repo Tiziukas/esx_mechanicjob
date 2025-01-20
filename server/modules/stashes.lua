@@ -1,5 +1,6 @@
 ESX.RegisterServerCallback('esx_mechanicjob:getStockItems', function(source, cb)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local source <const> = source
+    local xPlayer <const> = ESX.GetPlayerFromId(source)
     
     if xPlayer.job.name ~= 'mechanic' then
         return DropPlayer(source, "Cheater")
@@ -12,7 +13,8 @@ end)
 
 RegisterServerEvent('esx_mechanicjob:putStockItems')
 AddEventHandler('esx_mechanicjob:putStockItems', function(itemName, count)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local source <const> = source
+    local xPlayer <const> = ESX.GetPlayerFromId(source)
     
     if xPlayer.job.name ~= 'mechanic' then
         return DropPlayer(source, "Cheater")
@@ -35,7 +37,8 @@ end)
 
 RegisterServerEvent('esx_mechanicjob:getStockItem')
 AddEventHandler('esx_mechanicjob:getStockItem', function(itemName, count)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local source <const> = source
+    local xPlayer <const> = ESX.GetPlayerFromId(source)
 
     if xPlayer.job.name ~= 'mechanic' then
         return DropPlayer(source, "Cheater")

@@ -48,13 +48,12 @@ local function OpenCloakroomMenu()
     )
 end
 
-CreateThread(function()
+Citizen.CreateThread(function()
     for zoneName, zoneData in pairs(mechanicZones) do
         local cloakroomConfig <const> = zoneData.cloakroom
         local location <const>  = cloakroomConfig.location
         local markerConfig <const> = cloakroomConfig.marker
-        print("Create cloakroom point")
-        print(location)
+
         cloakroomPoints[#cloakroomPoints + 1] = ESX.Point:new({
             coords = location,
             distance = 2.0,
@@ -62,8 +61,7 @@ CreateThread(function()
                 ESX.HideUI()
             end,
             inside = function(point)
-                ESX.TextUI('Press [E] to open cloakroom')
-                --ESX.TextUI('Press [E] to open cloakroom', 'info') | Use of release
+                ESX.TextUI('Press [E] to open cloakroom', 'info')
                 DrawMarker(
                     markerConfig.type or 20, -- Default to cylinder marker
                     location.x, location.y, location.z, -- Position

@@ -36,7 +36,7 @@ local function CreateJobBlip(coords, name)
 end
 
 local function DrawOnVehicle(veh)
-    SetEntityDrawOutline(vehicle, true)
+    SetEntityDrawOutline(veh, true)
     SetEntityDrawOutlineColor(251, 155, 4, 1)
 end
 
@@ -58,28 +58,24 @@ local function EndJob()
     end
 end
 
-local function SpawnNPC(coords, pedModel)
+local function SpawnNPC(coords, heading, pedModel)
     if npc then return npc end
     ESX.Streaming.RequestModel(pedModel)
-    npc = CreatePed(4, pedModel, coords.x, coords.y, coords.z, 180.0, false, true)
-    print(npc)
+    print(coords)
+    print(heading)
+    print(pedModel)
+    npc = CreatePed(0, pedModel, coords.x, coords.y, coords.z - 1.0, heading, false, true)
     FreezeEntityPosition(npc, true)
     SetEntityInvincible(npc, true)
     SetBlockingOfNonTemporaryEvents(npc, true)
+    local dict, anim = "oddjobs@assassinate@bus@", "looking_for_help"
+    ESX.Streaming.RequestAnimDict(dict)
+    TaskPlayAnim(npc, dict, anim, 8.0, 1.0, -1, 16, 0.0, false, false, false)
     SetModelAsNoLongerNeeded(pedModel)
 end
 
-local function SpawnVehicle(coords, model)
-    if vehicle then return vehicle end
-    ESX.Game.SpawnVehicle(model, coords, 0.0, function(veh)
-        SetVehicleOnGroundProperly(veh)
-        vehicle = veh
-    end)
-    return vehicle
-end
-
 local function MonitorRepair()
-    CreateThread(function()
+    Citizen.CreateThread(function()
         while true do
             Wait(1000)
             if GetVehicleEngineHealth(vehicle) > 950.0 then
@@ -105,9 +101,10 @@ local function FindNearestDropOffPoint(coords)
     return closestPoint
 end
 
+
 local function CreateRepairPoint(job)
-    print("Creating Repair Start Point")
     if repairPoint then repairPoint:delete() end
+    print("Created point")
     repairPoint = ESX.Point:new({
         coords = job.npcCoords,
         distance = 25.0,
@@ -116,11 +113,10 @@ local function CreateRepairPoint(job)
                 ESX.ShowNotification(TranslateCap('vehicle_already_spawned'))
                 return EndJob()
             end
-            print("Player Entered Zone")
-            SpawnVehicle(job.vehicleCoords, job.carModel)
-            SpawnNPC(job.npcCoords, job.npcModel)
+            local vehNetId = ESX.AwaitServerCallback("esx_mechanicjob:server:spawnVehicle")
+            vehicle = NetworkGetEntityFromNetworkId(vehNetId)
+            SpawnNPC(job.npcCoords, job.npcHeading, job.npcModel)
             Wait(1000)
-            SetVehicleEngineHealth(vehicle, 0.0)
             DrawOnVehicle(vehicle)
         end,
         inside = function()
@@ -129,7 +125,6 @@ local function CreateRepairPoint(job)
                 MonitorRepair()
                 SetEntityDrawOutline(vehicle, false)
                 repairPoint:delete()
-                print("Delete Point")
             end
         end
     })
@@ -153,19 +148,18 @@ end
 
 local function CreateTowStartPoint(job)
     if towStartPoint then towStartPoint:delete() end
-    print("Creating Tow Start Point")
     towStartPoint = ESX.Point:new({
         coords = job.npcCoords,
-        distance = 10.0,
+        distance = 25.0,
         enter = function()
             if vehicle or npc then 
                 ESX.ShowNotification(TranslateCap('vehicle_already_spawned'))
                 return
             end
-            SpawnVehicle(job.vehicleCoords, job.carModel)
-            SpawnNPC(job.npcCoords, job.npcModel)
+            local vehNetId = ESX.AwaitServerCallback("esx_mechanicjob:server:spawnVehicle")
+            vehicle = NetworkGetEntityFromNetworkId(vehNetId)
+            SpawnNPC(job.npcCoords, job.npcHeading, job.npcModel)
             Wait(1000)
-            SetVehicleEngineHealth(vehicle, 0.0)
             DrawOnVehicle(vehicle)
         end,
         inside = function()

@@ -3,8 +3,12 @@ Config = {}
 Config.Locale = GetConvar('esx:locale', 'en')
 
 Config.Controls = {
-	mechanicMenu = "F6",
-	toggleNPCJob = "F7"
+	mechanicMenu = "F6"
+}
+
+Config.ItemNames = {
+    repairKit = 'repairkit',
+    tyreKit = 'tyrekit'
 }
 
 Config.MechanicZones = {

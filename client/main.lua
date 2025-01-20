@@ -16,7 +16,7 @@ ESX.RegisterClientCallback('esx_mechanicjob:client:checkForVehicle', function(cb
     cb(vehicle)
 end)
 
-CreateThread(function()
+Citizen.CreateThread(function()
     for zoneName, zoneData in pairs(Config.MechanicZones) do
         local blipConfig = zoneData.blip
         local blipLocation = blipConfig.location

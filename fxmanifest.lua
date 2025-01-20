@@ -2,6 +2,7 @@ fx_version 'adamant'
 
 game 'gta5'
 
+author 'Tizas <ESX Framework>'
 description 'Allows players to RP as a mechanic'
 lua54 'yes'
 version '2.0'
@@ -40,6 +41,6 @@ client_scripts {
 
 dependencies {
     'es_extended',
-    'esx_billing'
-    --'esx_textui' add this into release
+    'esx_billing',
+    'esx_textui'
 }
