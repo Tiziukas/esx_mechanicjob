@@ -50,7 +50,7 @@ local function EndJob()
     if towDropOffPoint then towDropOffPoint:delete() end
     if DoesEntityExist(vehicle) then
         SetEntityAsMissionEntity(vehicle, true, true)
-        ESX.Game.DeleteVehicle(vehicle) 
+        ESX.Game.DeleteVehicle(vehicle)
     end
     vehicle, npc, activeJob = nil, nil, nil
 end
@@ -69,7 +69,7 @@ local function SpawnNPC(coords, heading, pedModel)
 end
 
 local function MonitorRepair()
-CreateThread(function()
+    CreateThread(function()
         while true do
             Wait(1000)
             if GetVehicleEngineHealth(vehicle) > 950.0 then
@@ -98,12 +98,11 @@ end
 
 local function CreateRepairPoint(job)
     if repairPoint then repairPoint:delete() end
-    print("Created point")
     repairPoint = ESX.Point:new({
         coords = job.npcCoords,
         distance = 25.0,
         enter = function()
-            if vehicle or npc then 
+            if vehicle or npc then
                 ESX.ShowNotification(Translate('vehicle_already_spawned'))
                 return EndJob()
             end
@@ -146,7 +145,7 @@ local function CreateTowStartPoint(job)
         coords = job.npcCoords,
         distance = 25.0,
         enter = function()
-            if vehicle or npc then 
+            if vehicle or npc then
                 ESX.ShowNotification(Translate('vehicle_already_spawned'))
                 return
             end
@@ -173,7 +172,7 @@ RegisterNetEvent('esx_mechanicjob:client:startJob', function(job)
     if activeJob then return ESX.ShowNotification(Translate('already_active_job')) end
 
     activeJob = job
-    
+
     if job.type == "repair" then
         CreateRepairPoint(job)
     elseif job.type == "tow" then
@@ -186,7 +185,7 @@ end)
 function OpenNpcMenu()
     local elements = {
         { label = Translate('start_job'), value = "start_job" },
-        { label = Translate('end_job'), value = "end_job" }
+        { label = Translate('end_job'),   value = "end_job" }
     }
 
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'npc_job_menu', {

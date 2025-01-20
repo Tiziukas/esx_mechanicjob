@@ -40,7 +40,6 @@ local function OpenPutStocksMenu()
         end, function(data2, menu2)
             menu2.close()
         end)
-
     end, function(data, menu)
         menu.close()
     end)
@@ -64,9 +63,9 @@ local function OpenGetStocksMenu()
         local itemName = element.value
 
         local elements2 = {
-            { unselectable = true, icon = 'fas fa-box', title = element.title },
-            { title = 'Amount', input = true, inputType = 'number', inputMin = 1, inputMax = 100, inputPlaceholder = 'Amount to withdraw..' },
-            { icon = 'fas fa-check-double', title = 'Confirm', value = 'confirm' }
+            { unselectable = true,          icon = 'fas fa-box', title = element.title },
+            { title = 'Amount',             input = true,        inputType = 'number', inputMin = 1, inputMax = 100, inputPlaceholder = 'Amount to withdraw..' },
+            { icon = 'fas fa-check-double', title = 'Confirm',   value = 'confirm' }
         }
 
         ESX.OpenContext("right", elements2, function(menu2, element2)
@@ -87,8 +86,8 @@ end
 
 local function OpenMechanicStashMenu()
     local elements = {
-        {label = 'Place Item', value = 'put_stash'},
-        {label = 'Get Item', value = 'get_stash'}
+        { label = 'Place Item', value = 'put_stash' },
+        { label = 'Get Item',   value = 'get_stash' }
     }
 
     ESX.UI.Menu.Open(
@@ -121,11 +120,13 @@ CreateThread(function()
         stashPoints[#stashPoints + 1] = ESX.Point:new({
             coords = stashLocation,
             distance = 2.0,
+            enter = function()
+                ESX.TextUI('Press [E] to open mechanic stash')
+            end,
             leave = function()
                 ESX.HideUI()
             end,
             inside = function(point)
-                ESX.TextUI('Press [E] to open mechanic stash')
                 DrawMarker(
                     stashMarker.type or 1,
                     stashLocation.x, stashLocation.y, stashLocation.z,

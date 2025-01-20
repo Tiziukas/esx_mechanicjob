@@ -13,23 +13,23 @@ local function dropPlayer(_source, message)
 end
 
 ESX.RegisterServerCallback('esx_mechanicjob:server:spawnVehicle', function(source, cb)
-    local _source <const> = source 
+    local _source <const> = source
     local session = activeJobs[_source]
-    if not session then 
+    if not session then
         return dropPlayer("Attempted to spawn vehicle without being in an active job")
     end
 
     if session.vehicle then
         return dropPlayer("Car was already spawned")
-    end 
+    end
     local playerCoords = GetEntityCoords(GetPlayerPed(_source))
     local distance = #(playerCoords - vec3(session.job.vehicleCoords.x, session.job.vehicleCoords.y, session.job.vehicleCoords.z))
     if distance > MAX_VEHICLE_SPAWN_DISTANCE then
         return dropPlayer(_source, "Player was too far")
     end
-    local netId = ESX.OneSync.SpawnVehicle(session.job.carModel, vector3(session.job.vehicleCoords.x, session.job.vehicleCoords.y, session.job.vehicleCoords.z), 0, {engineHealth = 0.0})
+    local netId = ESX.OneSync.SpawnVehicle(session.job.carModel, vector3(session.job.vehicleCoords.x, session.job.vehicleCoords.y, session.job.vehicleCoords.z), 0, { engineHealth = 0.0 })
     cb(netId)
-  end)
+end)
 
 local function FindNearestDropOffPoint(coords)
     local closestPoint, closestDistance = nil, math.huge
@@ -55,7 +55,7 @@ RegisterNetEvent('esx_mechanicjob:server:startJob', function()
     end
     local job = Config.NPCJobs[math.random(#Config.NPCJobs)]
 
-    activeJobs[_source] = {job = job, dropOffPoint = FindNearestDropOffPoint(job.vehicleCoords)}
+    activeJobs[_source] = { job = job, dropOffPoint = FindNearestDropOffPoint(job.vehicleCoords) }
 
     TriggerClientEvent("esx_mechanicjob:client:startJob", _source, job)
     --print(string.format('Player %s started job %s', GetPlayerName(_source), job.type))
@@ -64,7 +64,7 @@ end)
 RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
     local _source <const> = source
     local xPlayer <const> = ESX.GetPlayerFromId(_source)
-    local distance
+
 
     if not xPlayer then return end
 
@@ -81,14 +81,15 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
         return dropPlayer(_source, "Job type mismatch!")
     end
 
-    local playerCoords = GetEntityCoords(GetPlayerPed(_source))
+    local playerCoords = xPlayer.getCoords(true)
+    local distance
 
     if currentJob.type == 'repair' then
         distance = #(playerCoords - vec3(currentJob.job.vehicleCoords.x, currentJob.job.vehicleCoords.y, currentJob.job.vehicleCoords.z))
     else
         distance = #(playerCoords - vec3(currentJob.job.dropOffPoint.x, currentJob.job.dropOffPoint.y, currentJob.job.dropOffPoint.z))
     end
-    
+
     if distance > MAX_JOB_DISTANCE then
         return dropPlayer(_source, "Player was too far")
     end

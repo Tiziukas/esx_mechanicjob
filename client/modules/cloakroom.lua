@@ -24,8 +24,8 @@ end
 
 local function OpenCloakroomMenu()
     local elements = {
-        {label = 'Work Clothes', value = 'work_clothes'},
-        {label = 'Civilian Clothes', value = 'civilian_clothes'}
+        { label = 'Work Clothes',     value = 'work_clothes' },
+        { label = 'Civilian Clothes', value = 'civilian_clothes' }
     }
 
     ESX.UI.Menu.Open(
@@ -51,31 +51,34 @@ end
 CreateThread(function()
     for zoneName, zoneData in pairs(mechanicZones) do
         local cloakroomConfig <const> = zoneData.cloakroom
-        local location <const>  = cloakroomConfig.location
-        local markerConfig <const> = cloakroomConfig.marker
+        local location <const>        = cloakroomConfig.location
+        local markerConfig <const>    = cloakroomConfig.marker
+
 
         cloakroomPoints[#cloakroomPoints + 1] = ESX.Point:new({
             coords = location,
             distance = 2.0,
+            enter = function()
+                ESX.TextUI('Press [E] to open cloakroom', 'info')
+            end,
             leave = function()
                 ESX.HideUI()
             end,
             inside = function(point)
-                ESX.TextUI('Press [E] to open cloakroom', 'info')
                 DrawMarker(
-                    markerConfig.type or 20, -- Default to cylinder marker
-                    location.x, location.y, location.z, -- Position
-                    0.0, 0.0, 0.0, -- Direction
-                    0.0, 0.0, 0.0, -- Rotation
-                    markerConfig.scale[1], markerConfig.scale[2], markerConfig.scale[3], -- Scale
+                    markerConfig.type or 20,                                                                        -- Default to cylinder marker
+                    location.x, location.y, location.z,                                                             -- Position
+                    0.0, 0.0, 0.0,                                                                                  -- Direction
+                    0.0, 0.0, 0.0,                                                                                  -- Rotation
+                    markerConfig.scale[1], markerConfig.scale[2], markerConfig.scale[3],                            -- Scale
                     markerConfig.colour[1], markerConfig.colour[2], markerConfig.colour[3], markerConfig.colour[4], -- RGBA
-                    false, -- Not bobbing
-                    false, -- No face camera
-                    2, -- P19
-                    markerConfig.rotate or false, -- Rotation enabled/disabled
-                    nil, -- Texture dictionary
-                    nil, -- Texture name
-                    false -- Draw on entities
+                    false,                                                                                          -- Not bobbing
+                    false,                                                                                          -- No face camera
+                    2,                                                                                              -- P19
+                    markerConfig.rotate or false,                                                                   -- Rotation enabled/disabled
+                    nil,                                                                                            -- Texture dictionary
+                    nil,                                                                                            -- Texture name
+                    false                                                                                           -- Draw on entities
                 )
                 if IsControlJustReleased(0, 38) then
                     OpenCloakroomMenu()
@@ -83,5 +86,4 @@ CreateThread(function()
             end
         })
     end
-
 end)
