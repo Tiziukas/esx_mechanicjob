@@ -43,7 +43,7 @@ end
 local function EndJob()
     if not activeJob then return ESX.ShowNotification(Translate('no_active_job')) end
     ESX.ShowNotification(Translate('job_ended'))
-    if DoesEntityExist(vehicle) then DeleteEntity(vehicle) end
+    if DoesEntityExist(npc) then DeleteEntity(npc) end
     if jobBlip then RemoveBlip(jobBlip) end
     if repairPoint then repairPoint:delete() end
     if towStartPoint then towStartPoint:delete() end
@@ -58,9 +58,6 @@ end
 local function SpawnNPC(coords, heading, pedModel)
     if npc then return npc end
     ESX.Streaming.RequestModel(pedModel)
-    print(coords)
-    print(heading)
-    print(pedModel)
     npc = CreatePed(0, pedModel, coords.x, coords.y, coords.z - 1.0, heading, false, true)
     FreezeEntityPosition(npc, true)
     SetEntityInvincible(npc, true)
@@ -173,11 +170,10 @@ end
 
 
 RegisterNetEvent('esx_mechanicjob:client:startJob', function(job)
-    if activeJob then
-        ESX.ShowNotification(Translate('already_active_job'))
-        return
-    end
+    if activeJob then return ESX.ShowNotification(Translate('already_active_job')) end
+
     activeJob = job
+    
     if job.type == "repair" then
         CreateRepairPoint(job)
     elseif job.type == "tow" then
@@ -199,9 +195,7 @@ function OpenNpcMenu()
         elements = elements
     }, function(data, menu)
         if data.current.value == "start_job" then
-            if activeJob then
-                return ESX.ShowNotification(Translate('already_active_job'))
-            end
+            if activeJob then return ESX.ShowNotification(Translate('already_active_job')) end
             TriggerServerEvent('esx_mechanicjob:server:startJob')
         elseif data.current.value == "end_job" then
             EndJob()

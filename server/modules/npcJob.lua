@@ -48,20 +48,17 @@ RegisterNetEvent('esx_mechanicjob:server:startJob', function()
     local _source <const> = source
     local xPlayer <const> = ESX.GetPlayerFromId(_source)
 
-    if not xPlayer then
-        return
-    end
+    if not xPlayer then return end
 
     if not xPlayer.job or xPlayer.job.name ~= "mechanic" then
-        dropPlayer(_source, "You are not a mechanic!")
-        return
+        return dropPlayer(_source, "You are not a mechanic!")
     end
     local job = Config.NPCJobs[math.random(#Config.NPCJobs)]
 
     activeJobs[_source] = {job = job, dropOffPoint = FindNearestDropOffPoint(job.vehicleCoords)}
 
     TriggerClientEvent("esx_mechanicjob:client:startJob", _source, job)
-    print(string.format('Player %s started job %s', GetPlayerName(_source), job.type))
+    --print(string.format('Player %s started job %s', GetPlayerName(_source), job.type))
 end)
 
 RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
