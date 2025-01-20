@@ -68,8 +68,8 @@ local function BreakVehicle()
         FreezePlayer = true,
         animation = {
             type = "anim",
-            dict = Config.ProgressBars.breakIntoVehicle.animation,
-            lib = Config.ProgressBars.breakIntoVehicle.lib
+            dict = Config.ProgressBars.breakIntoVehicle.animation.dict,
+            lib = Config.ProgressBars.breakIntoVehicle.animation.lib
         },
         onFinish = function()
             SetVehicleDoorsLocked(vehicle, 1)
@@ -105,8 +105,8 @@ local function CleanVehicle()
         FreezePlayer = true,
         animation = {
             type = "anim",
-            dict = Config.ProgressBars.cleanVehicle.dict,
-            lib = Config.ProgressBars.cleanVehicle.lib
+            dict = Config.ProgressBars.cleanVehicle.animation.dict,
+            lib = Config.ProgressBars.cleanVehicle.animation.lib
         },
         onFinish = function()
             WashDecalsFromVehicle(vehicle, ESX.PlayerData.ped, 1.0)
@@ -128,7 +128,7 @@ local function OpenVehInteractMenu()
         'default', GetCurrentResourceName(), 'billing_menu',
         {
             title    = 'Mechanic Menu',
-            align    = 'top-right',
+            align    = 'right',
             elements = elements
         },
         function(data, menu)
@@ -160,7 +160,7 @@ local function OpenMechanicMenu()
         'default', GetCurrentResourceName(), 'billing_menu',
         {
             title    = 'Mechanic Menu',
-            align    = 'top-right',
+            align    = 'right',
             elements = elements
         },
         function(data, menu)

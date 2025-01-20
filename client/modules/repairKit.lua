@@ -5,34 +5,15 @@ local function repairVehicle(veh)
 end
 
 RegisterNetEvent('esx_mechanicjob:client:useRepairKit', function()
-    local veh = ESX.Game.GetClosestVehicle(playerCoords)
-
-    local vehPos = GetEntityCoords(veh)
-    local vehHeading = GetEntityHeading(veh)
-    local vehDimensions = GetModelDimensions(GetEntityModel(veh))
-
-    local hoodOffset = 1.0 
-    local hoodPos = vector3(
-        vehPos.x + (math.cos(math.rad(vehHeading)) * (vehDimensions.y + hoodOffset)),
-        vehPos.y + (math.sin(math.rad(vehHeading)) * (vehDimensions.y + hoodOffset)),
-        vehPos.z
-    )
-
-    TaskGoToCoordAnyMeans(ESX.PlayerData.ped, hoodPos.x, hoodPos.y, hoodPos.z, 1.0, -1, vehHeading, 0.0)
-
-    local timeout = GetGameTimer() + 10000
-    while not IsEntityAtCoord(ESX.PlayerData.ped, hoodPos.x, hoodPos.y, hoodPos.z, 5.0, 5.0, 5.0, false, true, 0) do
-        Wait(100)
-        if GetGameTimer() > timeout then
-            ESX.ShowNotification("Could not reach the front of the vehicle.")
-            return
-        end
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+    local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
+    local vehCoords = GetEntityCoords(vehicle)
+    local distance = #(playerCoords - vehCoords)
+    if distance > 5 then
+        return print("Car was too far")
     end
-
-    TaskTurnPedToFaceCoord(ESX.PlayerData.ped, vehPos.x, vehPos.y, vehPos.z, 1000)
-    Wait(1000)
-
-    SetVehicleDoorOpen(veh, 4, false, false)
+    
+    SetVehicleDoorOpen(vehicle, 4, false, false)
     ESX.Progressbar("Fixing Vehicle", Config.ProgressBars.repairKit.time, {
         FreezePlayer = true,
         animation = {
@@ -41,7 +22,7 @@ RegisterNetEvent('esx_mechanicjob:client:useRepairKit', function()
             lib = Config.ProgressBars.repairKit.animation.lib
         },
         onFinish = function()
-            repairVehicle(veh)
+            repairVehicle(vehicle)
         end
     })
 end)

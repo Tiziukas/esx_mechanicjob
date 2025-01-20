@@ -9,7 +9,6 @@ version '2.0'
 
 shared_scripts {
     '@es_extended/imports.lua',
-    'locales/*.lua',
     '@es_extended/locale.lua',
     'config.lua'
 }
@@ -20,8 +19,6 @@ server_scripts {
     'server/modules/billing.lua',
     'server/modules/npcJob.lua',
     'server/modules/repairKit.lua',
-    'server/modules/tyreKit.lua',
-    'server/modules/props.lua',
     'npcLocations.lua'
 
 }
@@ -31,9 +28,11 @@ client_scripts {
     'client/modules/billing.lua',
     'client/modules/cloakroom.lua',
     'client/modules/npcJob.lua',
-    'client/modules/repairKit.lua',
-    'client/modules/tyreKit.lua',
-    'client/modules/props.lua',
+    'client/modules/repairKit.lua'
+}
+
+files {
+    'locales/*.lua',
 }
 
 dependencies {

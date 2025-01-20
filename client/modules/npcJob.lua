@@ -41,17 +41,17 @@ local function DrawOnVehicle(veh)
 end
 
 local function EndJob()
-    if not activeJob then return ESX.ShowNotification(Translate('no_active_job')) end
-    ESX.ShowNotification(Translate('job_ended'))
-    if DoesEntityExist(npc) then DeleteEntity(npc) end
+    if not activeJob then return ESX.ShowNotification(TranslateCap('no_active_job')) end
+    ESX.ShowNotification(TranslateCap('job_ended'))
+
     if jobBlip then RemoveBlip(jobBlip) end
     if repairPoint then repairPoint:delete() end
     if towStartPoint then towStartPoint:delete() end
     if towDropOffPoint then towDropOffPoint:delete() end
-    if DoesEntityExist(vehicle) then
-        SetEntityAsMissionEntity(vehicle, true, true)
-        ESX.Game.DeleteVehicle(vehicle) 
-    end
+
+    SetEntityAsNoLongerNeeded(vehicle)
+    SetEntityAsNoLongerNeeded(npc)
+
     vehicle, npc, activeJob = nil, nil, nil
 end
 
@@ -68,13 +68,23 @@ local function SpawnNPC(coords, heading, pedModel)
     SetModelAsNoLongerNeeded(pedModel)
 end
 
+local function MakePedWander()
+    FreezeEntityPosition(npc, false)
+    SetPedIntoVehicle(npc, vehicle, -1)
+    TaskVehicleDriveWander(npc, vehicle, 20.0, 786603) 
+end
+
 local function MonitorRepair()
 CreateThread(function()
         while true do
             Wait(1000)
             if GetVehicleEngineHealth(vehicle) > 950.0 then
-                ESX.ShowNotification(Translate('vehicle_repaired'))
+                ESX.ShowNotification(TranslateCap('vehicle_repaired'))
+                if IsPedInVehicle(ESX.PlayerData.ped, vehicle, false) then
+                    TaskLeaveVehicle(ESX.PlayerData.ped, vehicle, 262144)
+                end
                 TriggerServerEvent('esx_mechanicjob:server:completeJob', activeJob)
+                MakePedWander()
                 EndJob()
                 break
             end
@@ -104,7 +114,7 @@ local function CreateRepairPoint(job)
         distance = 25.0,
         enter = function()
             if vehicle or npc then 
-                ESX.ShowNotification(Translate('vehicle_already_spawned'))
+                ESX.ShowNotification(TranslateCap('vehicle_already_spawned'))
                 return EndJob()
             end
             local vehNetId = ESX.AwaitServerCallback("esx_mechanicjob:server:spawnVehicle")
@@ -132,7 +142,7 @@ local function CreateTowDropOffPoint(dropOffCoords)
         coords = dropOffCoords,
         distance = 10.0,
         enter = function()
-            ESX.ShowNotification(Translate('job_complete'))
+            ESX.ShowNotification(TranslateCap('job_complete'))
             DeleteEntity(vehicle)
             TriggerServerEvent('esx_mechanicjob:server:completeJob', activeJob)
             EndJob()
@@ -147,7 +157,7 @@ local function CreateTowStartPoint(job)
         distance = 25.0,
         enter = function()
             if vehicle or npc then 
-                ESX.ShowNotification(Translate('vehicle_already_spawned'))
+                ESX.ShowNotification(TranslateCap('vehicle_already_spawned'))
                 return
             end
             local vehNetId = ESX.AwaitServerCallback("esx_mechanicjob:server:spawnVehicle")
@@ -170,7 +180,7 @@ end
 
 
 RegisterNetEvent('esx_mechanicjob:client:startJob', function(job)
-    if activeJob then return ESX.ShowNotification(Translate('already_active_job')) end
+    if activeJob then return ESX.ShowNotification(TranslateCap('already_active_job')) end
 
     activeJob = job
     
@@ -185,17 +195,17 @@ end)
 
 function OpenNpcMenu()
     local elements = {
-        { label = Translate('start_job'), value = "start_job" },
-        { label = Translate('end_job'), value = "end_job" }
+        { label = TranslateCap('start_job'), value = "start_job" },
+        { label = TranslateCap('end_job'), value = "end_job" }
     }
 
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'npc_job_menu', {
-        title = Translate('npc_mechanic_title'),
-        align = "top-right",
+        title = TranslateCap('npc_mechanic_title'),
+        align = "right",
         elements = elements
     }, function(data, menu)
         if data.current.value == "start_job" then
-            if activeJob then return ESX.ShowNotification(Translate('already_active_job')) end
+            if activeJob then return ESX.ShowNotification(TranslateCap('already_active_job')) end
             TriggerServerEvent('esx_mechanicjob:server:startJob')
         elseif data.current.value == "end_job" then
             EndJob()

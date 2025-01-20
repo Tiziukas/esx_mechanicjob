@@ -95,7 +95,7 @@ local function OpenMechanicStashMenu()
         'default', GetCurrentResourceName(), 'cloakroom_menu',
         {
             title    = 'Cloakroom',
-            align    = 'top-right',
+            align    = 'right',
             elements = elements
         },
         function(data, menu)
@@ -121,11 +121,13 @@ CreateThread(function()
         stashPoints[#stashPoints + 1] = ESX.Point:new({
             coords = stashLocation,
             distance = 2.0,
+            enter = function()
+                ESX.TextUI('Press [E] to open mechanic stash')
+            end,
             leave = function()
                 ESX.HideUI()
             end,
             inside = function(point)
-                ESX.TextUI('Press [E] to open mechanic stash')
                 DrawMarker(
                     stashMarker.type or 1,
                     stashLocation.x, stashLocation.y, stashLocation.z,

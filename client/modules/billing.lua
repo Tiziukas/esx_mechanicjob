@@ -65,7 +65,7 @@ local function ViewUnpaidBills()
         'default', GetCurrentResourceName(), 'unpaid_bills',
         {
             title    = 'Unpaid Bills',
-            align    = 'top-right',
+            align    = 'right',
             elements = elements
         },
         function(data, menu)
@@ -89,7 +89,7 @@ function OpenBillingMenu()
         'default', GetCurrentResourceName(), 'billing_menu',
         {
             title    = 'Billing Menu',
-            align    = 'top-right',
+            align    = 'right',
             elements = elements
         },
         function(data, menu)

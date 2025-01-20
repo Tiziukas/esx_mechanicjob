@@ -32,7 +32,7 @@ local function OpenCloakroomMenu()
         'default', GetCurrentResourceName(), 'cloakroom_menu',
         {
             title    = 'Cloakroom',
-            align    = 'top-right',
+            align    = 'right',
             elements = elements
         },
         function(data, menu)
@@ -57,11 +57,13 @@ CreateThread(function()
         cloakroomPoints[#cloakroomPoints + 1] = ESX.Point:new({
             coords = location,
             distance = 2.0,
+            enter = function()
+                ESX.TextUI('Press [E] to open cloakroom', 'info')
+            end,
             leave = function()
                 ESX.HideUI()
             end,
             inside = function(point)
-                ESX.TextUI('Press [E] to open cloakroom', 'info')
                 DrawMarker(
                     markerConfig.type or 20, -- Default to cylinder marker
                     location.x, location.y, location.z, -- Position

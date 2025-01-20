@@ -82,13 +82,12 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
     end
 
     local playerCoords = GetEntityCoords(GetPlayerPed(_source))
-
-    if currentJob.type == 'repair' then
+    if currentJob.job.type == 'repair' then
         distance = #(playerCoords - vec3(currentJob.job.vehicleCoords.x, currentJob.job.vehicleCoords.y, currentJob.job.vehicleCoords.z))
     else
-        distance = #(playerCoords - vec3(currentJob.job.dropOffPoint.x, currentJob.job.dropOffPoint.y, currentJob.job.dropOffPoint.z))
+        distance = #(playerCoords - vec3(currentJob.dropOffPoint.x, currentJob.dropOffPoint.y, currentJob.dropOffPoint.z))
     end
-    
+    print(distance)
     if distance > MAX_JOB_DISTANCE then
         return dropPlayer(_source, "Player was too far")
     end
@@ -105,7 +104,7 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
     elseif currentJob.job.type == JOB_TYPE_TOW then
         xPlayer.addMoney(reward)
     else
-        return dropPlayer(_source, "Error: Unknown job type.")
+        return dropPlayer(_source, "Unknown job type.")
     end
 
     activeJobs[_source] = nil

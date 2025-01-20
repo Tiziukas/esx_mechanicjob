@@ -7,8 +7,7 @@ Config.Controls = {
 }
 
 Config.ItemNames = {
-    repairKit = 'repairkit',
-    tyreKit = 'tyrekit'
+    repairKit = 'repairkit'
 }
 
 Config.MechanicZones = {
@@ -47,43 +46,36 @@ Config.ProgressBars = {
     repairKit = {
         time = 5000,
         animation = {
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
-        }
-    },
-    tyreKit = {
-        time = 5000,
-        animation = {
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = "missmechanic",
+            lib = "work2_in"
         }
     },
     impoundVehicle = {
         time = 5000,
         animation = {
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = "ah_2_ext_alt-7",
+            lib = "player_one_dual-7"
         }
     },
     breakIntoVehicle = {
         time = 5000,
         animation = {
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = "anim@amb@casino@brawl@reacts@hr_blackjack@bg_blackjack_breakout_t02bg_blackjack_breakout_t02_s01_s03",
+            lib =  "gawk_loop_female_02"
         }
     },
     fixVehicle = {
         time = 5000,
         animation = {
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = "missmechanic",
+            lib = "work2_in"
         }
     },
     cleanVehicle = {
         time = 5000,
         animation = {
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = "timetable@maid@cleaning_window@idle_b",
+            lib = "idle_d"
         }
     },
 }
