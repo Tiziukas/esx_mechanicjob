@@ -33,12 +33,12 @@ RegisterNetEvent('esx_mechanicjob:client:useRepairKit', function()
     Wait(1000)
 
     SetVehicleDoorOpen(veh, 4, false, false)
-    ESX.Progressbar("Fixing Vehicle", 5000, {
+    ESX.Progressbar("Fixing Vehicle", Config.ProgressBars.repairKit.time, {
         FreezePlayer = true,
         animation = {
             type = "anim",
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = Config.ProgressBars.repairKit.animation.dict,
+            lib = Config.ProgressBars.repairKit.animation.lib
         },
         onFinish = function()
             repairVehicle(veh)

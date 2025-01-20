@@ -43,7 +43,50 @@ Config.MechanicZones = {
     }
 }
 
-
+Config.ProgressBars = {
+    repairKit = {
+        time = 5000,
+        animation = {
+            dict = "mini@prostitutes@sexlow_veh",
+            lib = "low_car_sex_to_prop_p2_player"
+        }
+    },
+    tyreKit = {
+        time = 5000,
+        animation = {
+            dict = "mini@prostitutes@sexlow_veh",
+            lib = "low_car_sex_to_prop_p2_player"
+        }
+    },
+    impoundVehicle = {
+        time = 5000,
+        animation = {
+            dict = "mini@prostitutes@sexlow_veh",
+            lib = "low_car_sex_to_prop_p2_player"
+        }
+    },
+    breakIntoVehicle = {
+        time = 5000,
+        animation = {
+            dict = "mini@prostitutes@sexlow_veh",
+            lib = "low_car_sex_to_prop_p2_player"
+        }
+    },
+    fixVehicle = {
+        time = 5000,
+        animation = {
+            dict = "mini@prostitutes@sexlow_veh",
+            lib = "low_car_sex_to_prop_p2_player"
+        }
+    },
+    cleanVehicle = {
+        time = 5000,
+        animation = {
+            dict = "mini@prostitutes@sexlow_veh",
+            lib = "low_car_sex_to_prop_p2_player"
+        }
+    },
+}
 
 Config.MechanicOutfits = {
     [0] = {

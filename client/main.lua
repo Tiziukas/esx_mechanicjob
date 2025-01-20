@@ -16,7 +16,7 @@ ESX.RegisterClientCallback('esx_mechanicjob:client:checkForVehicle', function(cb
     cb(vehicle)
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
     for zoneName, zoneData in pairs(Config.MechanicZones) do
         local blipConfig = zoneData.blip
         local blipLocation = blipConfig.location
@@ -47,12 +47,12 @@ local function ImpoundVehicle()
         end
     end
 
-    ESX.Progressbar("Impound Vehicle", 5000, {
+    ESX.Progressbar("Impound Vehicle", Config.ProgressBars.impoundVehicle.time, {
         FreezePlayer = true,
         animation = {
             type = "anim",
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = Config.ProgressBars.impoundVehicle.animation.dict,
+            lib = Config.ProgressBars.impoundVehicle.animation.lib
         },
         onFinish = function()
             ESX.Game.DeleteVehicle(vehicle) 
@@ -64,12 +64,12 @@ local function BreakVehicle()
     local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
 
-    ESX.Progressbar("Breaking into the vehicle", 5000, {
+    ESX.Progressbar("Breaking into the vehicle", Config.ProgressBars.breakIntoVehicle.time, {
         FreezePlayer = true,
         animation = {
             type = "anim",
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = Config.ProgressBars.breakIntoVehicle.animation,
+            lib = Config.ProgressBars.breakIntoVehicle.lib
         },
         onFinish = function()
             SetVehicleDoorsLocked(vehicle, 1)
@@ -82,12 +82,12 @@ local function FixVehicle()
     local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
 
-    ESX.Progressbar("Fixing vehicle", 5000, {
+    ESX.Progressbar("Fixing vehicle", Config.ProgressBars.fixVehicle.time, {
         FreezePlayer = true,
         animation = {
             type = "anim",
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = Config.ProgressBars.fixVehicle.animation.dict,
+            lib = Config.ProgressBars.fixVehicle.animation.lib
         },
         onFinish = function()
             SetVehicleEngineHealth(vehicle, 1000)
@@ -101,12 +101,12 @@ local function CleanVehicle()
     local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
 
-    ESX.Progressbar("Cleaning the vehicle", 5000, {
+    ESX.Progressbar("Cleaning the vehicle", Config.ProgressBars.cleanVehicle.time, {
         FreezePlayer = true,
         animation = {
             type = "anim",
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = Config.ProgressBars.cleanVehicle.dict,
+            lib = Config.ProgressBars.cleanVehicle.lib
         },
         onFinish = function()
             WashDecalsFromVehicle(vehicle, ESX.PlayerData.ped, 1.0)

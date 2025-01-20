@@ -8,14 +8,14 @@ lua54 'yes'
 version '2.0'
 
 shared_scripts {
-    '@es_extended/imports.lua'
+    '@es_extended/imports.lua',
+    'locales/*.lua',
+    '@es_extended/locale.lua',
+    'config.lua'
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    '@es_extended/locale.lua',
-    'locales/*.lua',
-    'config.lua',
     'server/main.lua',
     'server/modules/billing.lua',
     'server/modules/npcJob.lua',
@@ -27,9 +27,6 @@ server_scripts {
 }
 
 client_scripts {
-    '@es_extended/locale.lua',
-    'locales/*.lua',
-    'config.lua',
     'client/main.lua',
     'client/modules/billing.lua',
     'client/modules/cloakroom.lua',

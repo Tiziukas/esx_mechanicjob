@@ -62,12 +62,12 @@ RegisterNetEvent('esx_mechanicjob:client:useTireKit', function()
     end
 
     ClearPedTasks(ESX.PlayerData.ped)
-    ESX.Progressbar("repairing_tire", 5000, {
+    ESX.Progressbar("repairing_tire", Config.ProgressBars.tyreKit.time, {
         FreezePlayer = true,
         animation = {
             type = "anim",
-            dict = "mini@prostitutes@sexlow_veh",
-            lib = "low_car_sex_to_prop_p2_player"
+            dict = Config.ProgressBars.tyreKit.animation.dict,
+            lib = Config.ProgressBars.tyreKit.animation.lib
         },
         onFinish = function()
             repairTire(vehicle, nearestTireIndex)

@@ -11,8 +11,7 @@ ESX.RegisterServerCallback('esx_mechanicjob:getStockItems', function(source, cb)
     end)
 end)
 
-RegisterServerEvent('esx_mechanicjob:putStockItems')
-AddEventHandler('esx_mechanicjob:putStockItems', function(itemName, count)
+RegisterServerEvent('esx_mechanicjob:putStockItems', function(itemName, count)
     local source <const> = source
     local xPlayer <const> = ESX.GetPlayerFromId(source)
     
@@ -35,8 +34,7 @@ AddEventHandler('esx_mechanicjob:putStockItems', function(itemName, count)
     end)
 end)
 
-RegisterServerEvent('esx_mechanicjob:getStockItem')
-AddEventHandler('esx_mechanicjob:getStockItem', function(itemName, count)
+RegisterServerEvent('esx_mechanicjob:getStockItem', function(itemName, count)
     local source <const> = source
     local xPlayer <const> = ESX.GetPlayerFromId(source)
 

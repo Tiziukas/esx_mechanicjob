@@ -69,24 +69,19 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
     local xPlayer <const> = ESX.GetPlayerFromId(_source)
     local distance
 
-    if not xPlayer then
-        return
-    end
+    if not xPlayer then return end
 
     if not xPlayer.job or xPlayer.job.name ~= "mechanic" then
-        dropPlayer(_source, "Not Mechanic")
-        return
+        return dropPlayer(_source, "Not Mechanic")
     end
 
     if not activeJobs[_source] then
-        dropPlayer(_source, "Job was not active")
-        return
+        return dropPlayer(_source, "Job was not active")
     end
 
     local currentJob = activeJobs[_source]
     if currentJob.job.type ~= job.type then
-        dropPlayer(_source, "Job type mismatch!")
-        return
+        return dropPlayer(_source, "Job type mismatch!")
     end
 
     local playerCoords = GetEntityCoords(GetPlayerPed(_source))
@@ -98,13 +93,11 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
     end
     
     if distance > MAX_JOB_DISTANCE then
-        dropPlayer(_source, "Player was too far")
-        return
+        return dropPlayer(_source, "Player was too far")
     end
 
     if jobCooldowns[_source] and jobCooldowns[_source] > os.time() then
-        dropPlayer(_source, "Cooldown breached.")
-        return
+        return dropPlayer(_source, "Cooldown breached.")
     end
 
     jobCooldowns[_source] = os.time() + JOB_COOLDOWN_TIME
@@ -115,10 +108,9 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
     elseif currentJob.job.type == JOB_TYPE_TOW then
         xPlayer.addMoney(reward)
     else
-        dropPlayer(_source, "Error: Unknown job type.")
-        return
+        return dropPlayer(_source, "Error: Unknown job type.")
     end
 
     activeJobs[_source] = nil
-    print(string.format('Mechanic job completed: %s for player %s', currentJob.type, _source))
+    --print(string.format('Mechanic job completed: %s for player %s', currentJob.type, _source))
 end)
