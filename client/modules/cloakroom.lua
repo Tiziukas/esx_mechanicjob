@@ -1,3 +1,4 @@
+local resourceName <const> = GetCurrentResourceName()
 local mechanicZones <const> = Config.MechanicZones
 local cloakroomPoints = {}
 
@@ -6,8 +7,7 @@ local function SetMechanicOutfit()
     local jobGrade = LocalPlayer.state.job.grade
     local outfit = Config.MechanicOutfits[jobGrade]
     if not outfit then
-        ESX.ShowNotification('No outfit configured for your grade.')
-        return
+        return ESX.ShowNotification('No outfit configured for your grade.')
     end
 
     local gender = skin.sex == 0 and "male" or "female"
@@ -29,7 +29,7 @@ local function OpenCloakroomMenu()
     }
 
     ESX.UI.Menu.Open(
-        'default', GetCurrentResourceName(), 'cloakroom_menu',
+        'default', resourceName, 'cloakroom_menu',
         {
             title    = 'Cloakroom',
             align    = 'right',
@@ -48,6 +48,7 @@ local function OpenCloakroomMenu()
     )
 end
 
+local canInteract = false
 CreateThread(function()
     for zoneName, zoneData in pairs(mechanicZones) do
         local cloakroomConfig <const> = zoneData.cloakroom
@@ -58,12 +59,15 @@ CreateThread(function()
             coords = location,
             distance = 2.0,
             enter = function()
-                ESX.TextUI('Press [E] to open cloakroom', 'info')
+                canInteract = true
+                local key = ESX.GetInteractKey()
+                ESX.TextUI(string.format("Press [%s] to open the Cloakroom", key), "info")     
             end,
             leave = function()
+                canInteract = false
                 ESX.HideUI()
             end,
-            inside = function(point)
+            inside = function()
                 DrawMarker(
                     markerConfig.type or 20, -- Default to cylinder marker
                     location.x, location.y, location.z, -- Position
@@ -79,11 +83,14 @@ CreateThread(function()
                     nil, -- Texture name
                     false -- Draw on entities
                 )
-                if IsControlJustReleased(0, 38) then
-                    OpenCloakroomMenu()
-                end
             end
         })
     end
-
 end)
+
+ESX.RegisterInteraction('cloakroomInteraction', function()
+    if canInteract then
+        OpenCloakroomMenu()
+    end
+end)
+

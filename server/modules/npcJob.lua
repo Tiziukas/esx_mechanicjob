@@ -8,8 +8,9 @@ local MAX_VEHICLE_SPAWN_DISTANCE <const> = 30.0
 local JOB_COOLDOWN_TIME <const> = 60
 
 local function dropPlayer(_source, message)
-    print(string.format('%s was dropped due to %s', GetPlayerName(_source), message))
-    --DropPlayer(_source, "Cheating")
+    local xPlayer = ESX.GetPlayerFromId(_source)
+    xPlayer.kick("Cheating")
+    error(string.format('%s was dropped due to %s', GetPlayerName(_source), message))
 end
 
 ESX.RegisterServerCallback('esx_mechanicjob:server:spawnVehicle', function(source, cb)
@@ -28,6 +29,7 @@ ESX.RegisterServerCallback('esx_mechanicjob:server:spawnVehicle', function(sourc
         return dropPlayer(_source, "Player was too far")
     end
     local netId = ESX.OneSync.SpawnVehicle(session.job.carModel, vector3(session.job.vehicleCoords.x, session.job.vehicleCoords.y, session.job.vehicleCoords.z), 0, {engineHealth = 0.0})
+    Wait(250)
     cb(netId)
   end)
 

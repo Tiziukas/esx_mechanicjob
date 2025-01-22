@@ -1,6 +1,8 @@
+local resourceName <const> = GetCurrentResourceName()
+
 local function IssueBill()
     ESX.UI.Menu.Open(
-        'dialog', GetCurrentResourceName(), 'billing_amount',
+        'dialog', resourceName, 'billing_amount',
         {
             title = 'Enter bill amount'
         },
@@ -15,7 +17,7 @@ local function IssueBill()
             menu.close() 
 
             ESX.UI.Menu.Open(
-                'dialog', GetCurrentResourceName(), 'billing_reason',
+                'dialog', resourceName, 'billing_reason',
                 {
                     title = 'Enter billing reason'
                 },
@@ -32,7 +34,8 @@ local function IssueBill()
                     if player ~= -1 and distance <= 3.0 then
                         local playerId = GetPlayerServerId(player)
                         TriggerServerEvent('esx_billing:sendBill', playerId, 'society_mechanic', reason, amount)
-                        ESX.ShowNotification('Bill issued successfully with reason: ' .. reason)
+                        ESX.ShowNotification(string.format("Bill issued successfully with reason: %s", reason))
+
                     else
                         ESX.ShowNotification('No player nearby')
                     end
@@ -55,22 +58,21 @@ local function ViewUnpaidBills()
     local bills = ESX.AwaitServerCallback('esx_mechanicjob:server:getSocietyBillsWithNames', 'society_mechanic')
     local elements = {}
     for i=1, #bills, 1 do
-        table.insert(elements, {
-            label = bills[i].fullName .. ' - $' .. bills[i].amount,
+        elements[#elements + 1] = {
+            label = string.format("%s - $%d", bills[i].fullName, bills[i].amount),
             value = bills[i].id
-        })
+        }
     end
 
     ESX.UI.Menu.Open(
-        'default', GetCurrentResourceName(), 'unpaid_bills',
+        'default', resourceName, 'unpaid_bills',
         {
             title    = 'Unpaid Bills',
             align    = 'right',
             elements = elements
         },
         function(data, menu)
-            ESX.ShowNotification('Selected Bill ID: ' .. data.current.value)
-
+            ESX.ShowNotification(string.format("Selected Bill ID: %s", data.current.value))
         end,
         function(data, menu)
             menu.close()
@@ -86,7 +88,7 @@ function OpenBillingMenu()
     }
 
     ESX.UI.Menu.Open(
-        'default', GetCurrentResourceName(), 'billing_menu',
+        'default', resourceName, 'billing_menu',
         {
             title    = 'Billing Menu',
             align    = 'right',

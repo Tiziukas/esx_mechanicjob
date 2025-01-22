@@ -24,13 +24,12 @@ RegisterServerEvent('esx_mechanicjob:putStockItems', function(itemName, count)
         local playerItemCount = xPlayer.getInventoryItem(itemName).count
 
         if count <= 0 or count > playerItemCount then
-            xPlayer.showNotification('Invalid quantity or insufficient items.')
-            return
+            return xPlayer.showNotification('Invalid quantity or insufficient items.')
         end
 
         xPlayer.removeInventoryItem(itemName, count)
         inventory.addItem(itemName, count)
-        xPlayer.showNotification(count .. ' ' .. item.label .. ' have been deposited.')
+        xPlayer.showNotification(string.format("%d %s have been deposited.", count, item.label))
     end)
 end)
 
@@ -46,17 +45,15 @@ RegisterServerEvent('esx_mechanicjob:getStockItem', function(itemName, count)
         local item = inventory.getItem(itemName)
 
         if count <= 0 or item.count < count then
-            xPlayer.showNotification('Invalid quantity or not enough items in the stock.')
-            return
+            return xPlayer.showNotification('Invalid quantity or not enough items in the stock.')
         end
 
         if not xPlayer.canCarryItem(itemName, count) then
-            xPlayer.showNotification('You cannot carry this amount of items.')
-            return
+            return xPlayer.showNotification('You cannot carry this amount of items.')
         end
 
         inventory.removeItem(itemName, count)
         xPlayer.addInventoryItem(itemName, count)
-        xPlayer.showNotification(count .. ' ' .. item.label .. ' have been withdrawn.')
+        xPlayer.showNotification(string.format("%d %s have been withdrawn.", count, item.label))
     end)
 end)

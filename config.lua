@@ -6,6 +6,8 @@ Config.Controls = {
 	mechanicMenu = "F6"
 }
 
+Config.FlipVehicleOnRepair = false --Puts the vehicle on the ground if it was flipped after using the repair kit.
+
 Config.ItemNames = {
     repairKit = 'repairkit'
 }
@@ -38,7 +40,16 @@ Config.MechanicZones = {
                 scale = {1.0, 1.0, 1.0} -- Marker scale (x, y, z)
             }
         },
-        dropOffPoint = vec3(-1496.6725, 2136.5903, 55.937)
+        bossMenu = {  
+            location = vec3(-1496.6725, 2136.5903, 55.937), -- Boss menu marker location  
+            marker = {  
+                colour = {0, 0, 255, 0.8}, -- RGBA color for the marker  
+                rotate = true, -- Should the marker rotate?  
+                type = 22, -- Marker type | https://docs.fivem.net/docs/game-references/markers/  
+                scale = {1.2, 1.2, 1.2} -- Marker dimensions (x, y, z)  
+            }  
+        }, 
+        dropOffPoint = vec3(-1496.6725, 2136.5903, 55.937) -- The location for the drop-off point for the towing NPC job.
     }
 }
 
@@ -81,7 +92,7 @@ Config.ProgressBars = {
 }
 
 Config.MechanicOutfits = {
-    [0] = {
+    [0] = { -- Job Grade
         male = {
             ['tshirt_1'] = 15,  ['tshirt_2'] = 0,
             ['torso_1']  = 65,  ['torso_2']  = 0,
@@ -105,7 +116,7 @@ Config.MechanicOutfits = {
             ['mask_1']   = 0,   ['mask_2']   = 0
         }
     },
-    [1] = { 
+    [1] = { -- Job Grade
         male = {
             ['tshirt_1'] = 20,  ['tshirt_2'] = 0,
             ['torso_1']  = 66,  ['torso_2']  = 1,

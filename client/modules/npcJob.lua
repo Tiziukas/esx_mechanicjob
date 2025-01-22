@@ -1,4 +1,5 @@
-local activeJob, vehicle, npc, repairPoint, towStartPoint, towDropOffPoint, jobBlip = nil, nil, nil, nil, nil, nil, nil
+local activeJob, vehicle, npc, repairPoint, towStartPoint, towDropOffPoint, jobBlip, towTruck = nil, nil, nil, nil, nil, nil, nil, nil
+local resourceName <const> = GetCurrentResourceName()
 
 local function DrawText3D(coords, text, customEntry)
     local str = text
@@ -14,13 +15,27 @@ local function DrawText3D(coords, text, customEntry)
         AddTextEntry(customEntry, str)
         BeginTextCommandDisplayHelp(customEntry)
     else
-        AddTextEntry(GetCurrentResourceName(), str)
-        BeginTextCommandDisplayHelp(GetCurrentResourceName())
+        AddTextEntry(resourceName, str)
+        BeginTextCommandDisplayHelp(resourceName)
     end
     EndTextCommandDisplayHelp(2, false, false, -1)
 
-    SetFloatingHelpTextWorldPosition(1, coords)
+    SetFloatingHelpTextWorldPosition(1, vec3(coords.x, coords.y, coords.z + 0.5))
     SetFloatingHelpTextStyle(1, 1, 2, -1, 3, 0)
+end
+
+local function DrawTextOnScreen(string) 
+    SetTextFont(4)
+    SetTextProportional(1)
+    SetTextScale(0.0, 0.3)
+    SetTextColour(0, 0, 0, 255)
+    SetTextDropshadow(0, 0, 0, 0, 255)
+    SetTextEdge(1, 0, 0, 0, 150)
+    SetTextDropshadow()
+    SetTextOutline()
+    BeginTextCommandDisplayText('STRING')
+    AddTextComponentSubstringPlayerName(string)
+    EndTextCommandDisplayText(0.1, 0.1)
 end
 
 local function CreateJobBlip(coords, name)
@@ -37,7 +52,7 @@ end
 
 local function DrawOnVehicle(veh)
     SetEntityDrawOutline(veh, true)
-    SetEntityDrawOutlineColor(251, 155, 4, 1)
+    SetEntityDrawOutlineColor(253, 152, 0, 1)
 end
 
 local function EndJob()
@@ -75,7 +90,7 @@ local function MakePedWander()
 end
 
 local function MonitorRepair()
-CreateThread(function()
+    CreateThread(function()
         while true do
             Wait(1000)
             if GetVehicleEngineHealth(vehicle) > 950.0 then
@@ -119,6 +134,7 @@ local function CreateRepairPoint(job)
             end
             local vehNetId = ESX.AwaitServerCallback("esx_mechanicjob:server:spawnVehicle")
             vehicle = NetworkGetEntityFromNetworkId(vehNetId)
+            SetVehicleEngineHealth(vehicle, 0)-- In case of delay
             SpawnNPC(job.npcCoords, job.npcHeading, job.npcModel)
             Wait(1000)
             DrawOnVehicle(vehicle)
@@ -135,17 +151,47 @@ local function CreateRepairPoint(job)
 end
 
 local function CreateTowDropOffPoint(dropOffCoords)
-    CreateJobBlip(dropOffCoords, 'Meow')
+    CreateJobBlip(dropOffCoords, 'Tow Drop Off Point')
     if not dropOffCoords then return end
     if towDropOffPoint then towDropOffPoint:delete() end
     towDropOffPoint = ESX.Point:new({
         coords = dropOffCoords,
         distance = 10.0,
         enter = function()
+            local maxTime = 120 
+            local startTime = GetGameTimer()
+            
+            while IsVehicleAttachedToTowTruck(towTruck, vehicle) do
+                DrawTextOnScreen("Please de-attach the vehicle from your tow truck")
+                
+                if (GetGameTimer() - startTime) / 1000 >= maxTime then
+                    ESX.ShowNotification("Time limit exceeded! Please retry.", "error")
+                    return EndJob()
+                end
+                
+                Wait(0)
+            end
             ESX.ShowNotification(TranslateCap('job_complete'))
             DeleteEntity(vehicle)
             TriggerServerEvent('esx_mechanicjob:server:completeJob', activeJob)
             EndJob()
+        end,
+        inside = function()
+            DrawMarker(
+                20,
+                dropOffCoords.x, dropOffCoords.y, dropOffCoords.z, -- Position
+                0.0, 0.0, 0.0, -- Direction
+                0.0, 0.0, 0.0, -- Rotation
+                1.0, 1.0, 1.0, -- Scale
+                253, 152, 0, 1, -- RGBA
+                false, -- Not bobbing
+                false, -- No face camera
+                2, -- P19
+                true, -- Rotation enabled/disabled
+                nil, -- Texture dictionary
+                nil, -- Texture name
+                false -- Draw on entities
+            )
         end
     })
 end
@@ -157,11 +203,11 @@ local function CreateTowStartPoint(job)
         distance = 25.0,
         enter = function()
             if vehicle or npc then 
-                ESX.ShowNotification(TranslateCap('vehicle_already_spawned'))
-                return
+                return ESX.ShowNotification(TranslateCap('vehicle_already_spawned'))
             end
             local vehNetId = ESX.AwaitServerCallback("esx_mechanicjob:server:spawnVehicle")
             vehicle = NetworkGetEntityFromNetworkId(vehNetId)
+            SetVehicleEngineHealth(vehicle, 0)-- In case of delay
             SpawnNPC(job.npcCoords, job.npcHeading, job.npcModel)
             Wait(1000)
             DrawOnVehicle(vehicle)
@@ -169,6 +215,20 @@ local function CreateTowStartPoint(job)
         inside = function()
             DrawText3D(job.vehicleCoords, "~INPUT_PICKUP~ Start the job", 0.4)
             if IsControlJustReleased(0, 38) then
+                local maxTime = 120 
+                local startTime = GetGameTimer()
+                
+                while not IsVehicleAttachedToTowTruck(towTruck, vehicle) do
+                    DrawTextOnScreen("Please attach the vehicle to your tow truck")
+                    
+                    if (GetGameTimer() - startTime) / 1000 >= maxTime then
+                        ESX.ShowNotification("Time limit exceeded! Please retry.", "error")
+                        return EndJob()
+                    end
+                    
+                    Wait(0)
+                end
+                
                 local dropOffPoint = FindNearestDropOffPoint(job.vehicleCoords)
                 CreateTowDropOffPoint(dropOffPoint)
                 SetEntityDrawOutline(vehicle, false)
@@ -180,13 +240,18 @@ end
 
 
 RegisterNetEvent('esx_mechanicjob:client:startJob', function(job)
-    if activeJob then return ESX.ShowNotification(TranslateCap('already_active_job')) end
+    if activeJob then return ESX.ShowNotification(Translate('already_active_job')) end
 
     activeJob = job
     
     if job.type == "repair" then
         CreateRepairPoint(job)
     elseif job.type == "tow" then
+        towTruck = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
+        if not towTruck then
+            ESX.ShowNotification("You must be in a tow truck to accept jobs!", "error")
+            return EndJob()
+        end
         CreateTowStartPoint(job)
     end
     CreateJobBlip(job.npcCoords, job.jobName)
@@ -199,7 +264,7 @@ function OpenNpcMenu()
         { label = TranslateCap('end_job'), value = "end_job" }
     }
 
-    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'npc_job_menu', {
+    ESX.UI.Menu.Open('default', resourceName, 'npc_job_menu', {
         title = TranslateCap('npc_mechanic_title'),
         align = "right",
         elements = elements

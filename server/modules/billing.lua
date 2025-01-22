@@ -8,7 +8,7 @@ ESX.RegisterServerCallback('esx_mechanicjob:server:getSocietyBillsWithNames', fu
 
     for i = 1, #result do
         if result[i].firstname and result[i].lastname then
-            result[i].fullName = result[i].firstname .. " " .. result[i].lastname
+            result[i].fullName = string.format("%s %s", result[i].firstname, result[i].lastname)
         else
             result[i].fullName = "Unknown" -- Handle cases where names are missing
         end

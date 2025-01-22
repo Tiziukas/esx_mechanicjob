@@ -1,3 +1,5 @@
+local resourceName <const> = GetCurrentResourceName()
+
 local function ReturnNearbyVehicle()
     local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
@@ -34,7 +36,6 @@ CreateThread(function()
     end
 end)
 
-
 local function ImpoundVehicle()
     local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
     local vehicle = ESX.Game.GetClosestVehicle(playerCoords)
@@ -43,7 +44,7 @@ local function ImpoundVehicle()
         local vehicleCoords = GetEntityCoords(vehicle)
         local distance = #(playerCoords - vehicleCoords)
         if distance >= 5.0 then
-            return "no close vehicle"
+            return ESX.ShowNotification("No close vehicle", "error")
         end
     end
 
@@ -125,7 +126,7 @@ local function OpenVehInteractMenu()
     }
 
     ESX.UI.Menu.Open(
-        'default', GetCurrentResourceName(), 'billing_menu',
+        'default', resourceName, 'billing_menu',
         {
             title    = 'Mechanic Menu',
             align    = 'right',
@@ -157,7 +158,7 @@ local function OpenMechanicMenu()
     }
 
     ESX.UI.Menu.Open(
-        'default', GetCurrentResourceName(), 'billing_menu',
+        'default', resourceName, 'billing_menu',
         {
             title    = 'Mechanic Menu',
             align    = 'right',

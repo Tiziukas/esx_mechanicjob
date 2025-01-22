@@ -1,39 +1,35 @@
-<h1 align='center'>[ESX] Mechanicjob</a></h1><p align='center'><b><a href='https://discord.esx-framework.org/'>Discord</a> - <a href='https://documentation.esx-framework.org/legacy/installation'>Documentation</a></b></h5>
+# [ESX] Mechanic Job  
 
-## Requirements
+<p align="center">
+  <strong>
+    <a href="https://discord.esx-framework.org/">Discord</a> |
+    <a href="https://documentation.esx-framework.org/legacy/installation">Documentation</a>
+  </strong>
+</p>  
 
-* Auto mode
-  * No need to download another resource
+## Features  
+- Fully integrated mechanic job for ESX.  
+- Supports player management (billing and boss actions).  
+- Integrated NPC jobs for towing and repair.
+- Integrated repair kit item for users to repair their vehicles.
+- Stash management
+- Cloakroom for players by rank
 
-* Player management (billing and boss actions)
-  * [esx_society](https://github.com/esx-framework/esx_society)
-  * [esx_billing](https://github.com/esx-framework/esx_billing)
+---
 
-## Download & Installation
+## Requirements  
 
-### Using [fvm](https://github.com/qlaffont/fvm-installer)
-```
-fvm install --save --folder=esx esx-framework/esx_mechanicjob
-```
+### Dependencies  
+The following dependencies are required for proper functionality:  
+- [es_extended](https://github.com/esx-framework/es_extended)  
+- [esx_billing](https://github.com/esx-framework/esx_billing)  
+- [esx_textui](https://github.com/esx-framework/esx_textui) 
+- [esx_society](https://github.com/esx-framework/esx_society)   
 
-### Using Git
-```
-cd resources
-git clone https://github.com/esx-framework/esx_mechanicjob [esx]/esx_mechanicjob
-```
 
-### Manually
-- Download https://github.com/esx-framework/esx_mechanicjob/archive/master.zip
-- Put it in the `[esx]` directory
-
-## Installation
-- Import `esx_mechanicjob.sql` in your database
-- If you want player management you have to set `Config.EnablePlayerManagement` to `true` in `config.lua`
-- Add this to your `server.cfg`:
-
-```
-start esx_mechanicjob
-```
+## Download & Installation  
+1. Download the latest release.
+2. Extract the archive and place it in your [esx_addons] directory.
 
 # Legal
 ### License

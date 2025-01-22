@@ -2,6 +2,9 @@ local function repairVehicle(veh)
     SetVehicleEngineHealth(veh, 1000)
     SetVehicleEngineOn(veh, true, true, false)
     SetVehicleFixed(veh)
+    if Config.FlipVehicleOnRepair then
+        SetVehicleOnGroundProperly(veh)
+    end
 end
 
 RegisterNetEvent('esx_mechanicjob:client:useRepairKit', function()
@@ -10,7 +13,7 @@ RegisterNetEvent('esx_mechanicjob:client:useRepairKit', function()
     local vehCoords = GetEntityCoords(vehicle)
     local distance = #(playerCoords - vehCoords)
     if distance > 5 then
-        return print("Car was too far")
+        return ESX.ShowNotification("No nearby car", "error")
     end
     
     SetVehicleDoorOpen(vehicle, 4, false, false)
