@@ -54,7 +54,6 @@ CreateThread(function()
         local cloakroomConfig <const> = zoneData.cloakroom
         local location <const>  = cloakroomConfig.location
         local markerConfig <const> = cloakroomConfig.marker
-
         cloakroomPoints[#cloakroomPoints + 1] = ESX.Point:new({
             coords = location,
             distance = 2.0,

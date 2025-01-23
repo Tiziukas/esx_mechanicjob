@@ -1,3 +1,10 @@
+ESX.RegisterServerCallback('esx_mechanicjob:getPlayerInventory', function(source, cb)
+	local xPlayer    = ESX.GetPlayerFromId(source)
+	local items      = xPlayer.inventory
+
+	cb({items = items})
+end)
+
 ESX.RegisterServerCallback('esx_mechanicjob:getStockItems', function(source, cb)
     local source <const> = source
     local xPlayer <const> = ESX.GetPlayerFromId(source)

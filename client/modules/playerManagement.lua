@@ -20,7 +20,8 @@ CreateThread(function()
         bossMenuPoints[#bossMenuPoints + 1] = ESX.Point:new({  
             coords = location,  
             distance = 2.0,  
-            enter = function()  
+            enter = function() 
+                if ESX.PlayerData.job.grade_name ~= 'boss' then return end
                 canInteract = true  
                 local key = ESX.GetInteractKey()  
                 ESX.TextUI(string.format("Press [%s] to access the Boss Menu", key), "info")  
@@ -30,7 +31,6 @@ CreateThread(function()
                 ESX.HideUI()  
             end,  
             inside = function()  
-                -- Draw Marker  
                 DrawMarker(  
                     markerConfig.type or 22, -- Default marker type  
                     location.x, location.y, location.z, -- Marker position  

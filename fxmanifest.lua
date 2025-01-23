@@ -20,6 +20,7 @@ server_scripts {
     'server/modules/billing.lua',
     'server/modules/npcJob.lua',
     'server/modules/repairKit.lua',
+    'server/modules/stashes.lua',
     'npcLocations.lua'
 
 }
@@ -29,7 +30,9 @@ client_scripts {
     'client/modules/billing.lua',
     'client/modules/cloakroom.lua',
     'client/modules/npcJob.lua',
-    'client/modules/repairKit.lua'
+    'client/modules/repairKit.lua',
+    'client/modules/stashes.lua',
+    'client/modules/playerManagement.lua'
 }
 
 files {

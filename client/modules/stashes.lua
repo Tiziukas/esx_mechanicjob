@@ -1,51 +1,5 @@
-local resourceName <const> = GetCurrentResourceName()
 local mechanicZones <const> = Config.MechanicZones
 local stashPoints = {}
-
---local function OpenPutStocksMenu()
---    local inventory = ESX.AwaitServerCallback('esx_mechanicjob:getPlayerInventory')
---    local elements = {
---        { label = 'Inventory', icon = 'fas fa-box', value = nil, type = 'header' }
---    }
---
---    for _, item in ipairs(inventory.items) do
---        if item.count > 0 then
---            elements[#elements + 1] = {
---                label = string.format("%s x%d", item.label, item.count),
---                value = item.name,
---                type = 'item_standard'
---            }
---        end
---    end
---
---    ESX.UI.Menu.Open('default', resourceName, 'put_stock_items', {
---        title = 'Put Items in Stash',
---        align = 'top-left',
---        elements = elements
---    }, function(data, menu)
---        local itemName = data.current.value
---
---        ESX.UI.Menu.Open('dialog', resourceName, 'put_stock_amount', {
---            title = 'Amount to Deposit'
---        }, function(data2, menu2)
---            local count = tonumber(data2.value)
---
---            if count == nil or count <= 0 then
---                ESX.ShowNotification('Bad Quantity')
---            else
---                ESX.CloseMenu()
---                TriggerServerEvent('esx_mechanicjob:putStockItems', itemName, count)
---                Wait(1000)
---                OpenPutStocksMenu()
---            end
---        end, function(data2, menu2)
---            menu2.close()
---        end)
---
---    end, function(data, menu)
---        menu.close()
---    end)
---end
 
 local function OpenPutStocksMenu()
     local inventory = ESX.AwaitServerCallback('esx_mechanicjob:getPlayerInventory')
@@ -171,34 +125,6 @@ local function OpenMechanicStashMenu()
     end, function()
     end)
 end
-
-
---local function OpenMechanicStashMenu()
---    local elements = {
---        {label = 'Place Item', value = 'put_stash'},
---        {label = 'Get Item', value = 'get_stash'}
---    }
---
---    ESX.UI.Menu.Open(
---        'default', resourceName, 'cloakroom_menu',
---        {
---            title    = 'Cloakroom',
---            align    = 'right',
---            elements = elements
---        },
---        function(data, menu)
---            menu.close()
---            if data.current.value == 'put_stash' then
---                OpenPutStocksMenu()
---            elseif data.current.value == 'get_stash' then
---                OpenGetStocksMenu()
---            end
---        end,
---        function(data, menu)
---            menu.close()
---        end
---    )
---end
 
 local canInteract = false
 CreateThread(function()
