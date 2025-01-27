@@ -6,7 +6,6 @@ author 'Tizas <ESX Framework>'
 description 'Allows players to RP as a mechanic'
 lua54 'yes'
 version '2.0'
-use_experimental_fxv2_oal 'yes'
 
 shared_scripts {
     '@es_extended/imports.lua',
@@ -36,11 +35,11 @@ client_scripts {
 }
 
 files {
-    'locales/*.lua',
+    'locales/*.lua'
 }
 
 dependencies {
-    'es_extended',
+   'es_extended',
     'esx_billing',
     'esx_textui',
     'esx_society'

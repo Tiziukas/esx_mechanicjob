@@ -26,16 +26,14 @@ end
 
 local function DrawTextOnScreen(string) 
     SetTextFont(4)
-    SetTextProportional(1)
-    SetTextScale(0.0, 0.3)
-    SetTextColour(0, 0, 0, 255)
-    SetTextDropshadow(0, 0, 0, 0, 255)
-    SetTextEdge(1, 0, 0, 0, 150)
-    SetTextDropshadow()
-    SetTextOutline()
-    BeginTextCommandDisplayText('STRING')
-    AddTextComponentSubstringPlayerName(string)
-    EndTextCommandDisplayText(0.1, 0.1)
+    SetTextProportional(7)
+    SetTextScale(0.8, 0.8)
+    SetTextColour(255, 255, 255, 255)
+    SetTextDropShadow(0, 0, 0, 0, 255)
+    SetTextEdge(4, 0, 0, 0, 255)
+    SetTextEntry("STRING")
+    AddTextComponentString(string)
+    DrawText(0.38, 0.90)
 end
 
 local function CreateJobBlip(coords, name)
@@ -91,19 +89,20 @@ end
 
 local function MonitorRepair()
     CreateThread(function()
-        while true do
-            Wait(1000)
-            if GetVehicleEngineHealth(vehicle) > 950.0 then
-                ESX.ShowNotification(TranslateCap('vehicle_repaired'))
-                if IsPedInVehicle(ESX.PlayerData.ped, vehicle, false) then
-                    TaskLeaveVehicle(ESX.PlayerData.ped, vehicle, 262144)
-                end
-                TriggerServerEvent('esx_mechanicjob:server:completeJob', activeJob)
-                MakePedWander()
-                EndJob()
-                break
-            end
+        while GetVehicleEngineHealth(vehicle) < 950.0 do
+            DrawTextOnScreen("Fix the vehicle")
+            Wait(0)
         end
+            
+        ESX.ShowNotification(TranslateCap('vehicle_repaired'))
+
+        if IsPedInVehicle(ESX.PlayerData.ped, vehicle, false) then
+            TaskLeaveVehicle(ESX.PlayerData.ped, vehicle, 262144)
+        end
+        Wait(2000)
+        MakePedWander()
+        TriggerServerEvent('esx_mechanicjob:server:completeJob', activeJob)
+        EndJob()
     end)
 end
 
@@ -140,6 +139,7 @@ local function CreateRepairPoint(job)
             DrawOnVehicle(vehicle)
         end,
         inside = function()
+            print(job.vehicleCoords)
             DrawText3D(job.vehicleCoords, "~INPUT_PICKUP~ Start the job", 0.4)
             if IsControlJustReleased(0, 38) then
                 MonitorRepair()
@@ -183,7 +183,7 @@ local function CreateTowDropOffPoint(dropOffCoords)
                 0.0, 0.0, 0.0, -- Direction
                 0.0, 0.0, 0.0, -- Rotation
                 1.0, 1.0, 1.0, -- Scale
-                253, 152, 0, 1, -- RGBA
+                253, 152, 0, 200, -- RGBA
                 false, -- Not bobbing
                 false, -- No face camera
                 2, -- P19
@@ -213,14 +213,19 @@ local function CreateTowStartPoint(job)
             DrawOnVehicle(vehicle)
         end,
         inside = function()
-            DrawText3D(job.vehicleCoords, "~INPUT_PICKUP~ Start the job", 0.4)
+            DrawText3D(vec3(job.vehicleCoords.x, job.vehicleCoords.y, job.vehicleCoords.z), "~INPUT_PICKUP~ Start the job", 0.4)
             if IsControlJustReleased(0, 38) then
                 local maxTime = 120 
                 local startTime = GetGameTimer()
                 
                 while not IsVehicleAttachedToTowTruck(towTruck, vehicle) do
+
+                    if towTruck == 0 then 
+                        ESX.ShowNotification("You was not in a tow truck!")
+                        return EndJob()
+                    end
+
                     DrawTextOnScreen("Please attach the vehicle to your tow truck")
-                    
                     if (GetGameTimer() - startTime) / 1000 >= maxTime then
                         ESX.ShowNotification("Time limit exceeded! Please retry.", "error")
                         return EndJob()
@@ -248,7 +253,7 @@ RegisterNetEvent('esx_mechanicjob:client:startJob', function(job)
         CreateRepairPoint(job)
     elseif job.type == "tow" then
         towTruck = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
-        if not towTruck then
+        if towTruck == 0 then
             ESX.ShowNotification("You must be in a tow truck to accept jobs!", "error")
             return EndJob()
         end

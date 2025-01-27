@@ -9,7 +9,7 @@ local JOB_COOLDOWN_TIME <const> = 60
 
 local function dropPlayer(_source, message)
     local xPlayer = ESX.GetPlayerFromId(_source)
-    xPlayer.kick("Cheating")
+    --xPlayer.kick("Cheating")
     error(string.format('%s was dropped due to %s', GetPlayerName(_source), message))
 end
 
