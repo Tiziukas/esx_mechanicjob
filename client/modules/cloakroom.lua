@@ -7,31 +7,29 @@ local function SetMechanicOutfit()
     local jobGrade = LocalPlayer.state.job.grade
     local outfit = Config.MechanicOutfits[jobGrade]
     if not outfit then
-        return ESX.ShowNotification('No outfit configured for your grade.')
+        return ESX.ShowNotification(TranslateCap('no_outfit_configured'), "error")
     end
 
     local gender = skin.sex == 0 and "male" or "female"
     TriggerEvent('skinchanger:loadClothes', skin, outfit[gender])
 end
 
-
 local function ResetToCivilianClothes()
     local skin = ESX.AwaitServerCallback('esx_skin:getPlayerSkin')
     TriggerEvent('skinchanger:loadSkin', skin)
-    ESX.ShowNotification('You changed back into your civilian clothes.')
+    ESX.ShowNotification(TranslateCap('changed_to_civilian'), "success")
 end
-
 
 local function OpenCloakroomMenu()
     local elements = {
-        {label = 'Work Clothes', value = 'work_clothes'},
-        {label = 'Civilian Clothes', value = 'civilian_clothes'}
+        { label = TranslateCap('work_clothes'), value = 'work_clothes' },
+        { label = TranslateCap('civilian_clothes'), value = 'civilian_clothes' }
     }
 
     ESX.UI.Menu.Open(
         'default', resourceName, 'cloakroom_menu',
         {
-            title    = 'Cloakroom',
+            title    = TranslateCap('cloakroom'),
             align    = 'right',
             elements = elements
         },
@@ -60,7 +58,7 @@ CreateThread(function()
             enter = function()
                 canInteract = true
                 local key = ESX.GetInteractKey()
-                ESX.TextUI(string.format("Press [%s] to open the Cloakroom", key), "info")     
+                ESX.TextUI(string.format(TranslateCap('press_to_open_cloakroom'), key), "info")     
             end,
             leave = function()
                 canInteract = false
@@ -92,4 +90,3 @@ ESX.RegisterInteraction('cloakroomInteraction', function()
         OpenCloakroomMenu()
     end
 end)
-

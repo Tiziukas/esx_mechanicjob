@@ -13,7 +13,7 @@ RegisterNetEvent('esx_mechanicjob:client:useRepairKit', function()
     local vehCoords = GetEntityCoords(vehicle)
     local distance = #(playerCoords - vehCoords)
     if distance > 5 then
-        return ESX.ShowNotification("No nearby car", "error")
+        return ESX.ShowNotification(TranslateCap("no_nearby_vehicle"), "error")
     end
     
     SetVehicleDoorOpen(vehicle, 4, false, false)

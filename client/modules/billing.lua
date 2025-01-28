@@ -4,12 +4,12 @@ local function IssueBill()
     ESX.UI.Menu.Open(
         'dialog', resourceName, 'billing_amount',
         {
-            title = 'Enter bill amount'
+            title = TranslateCap('enter_bill_amount')
         },
         function(data, menu)
             local amount = tonumber(data.value)
             if not amount or amount <= 0 then
-                ESX.ShowNotification('Invalid amount')
+                ESX.ShowNotification(TranslateCap('invalid_amount'), "error")
                 menu.close()
                 return
             end
@@ -19,12 +19,12 @@ local function IssueBill()
             ESX.UI.Menu.Open(
                 'dialog', resourceName, 'billing_reason',
                 {
-                    title = 'Enter billing reason'
+                    title = TranslateCap('enter_billing_reason')
                 },
                 function(reasonData, reasonMenu)
                     local reason = tostring(reasonData.value)
                     if not reason or reason == '' then
-                        ESX.ShowNotification('Reason cannot be empty')
+                        ESX.ShowNotification(TranslateCap('empty_reason'), "error")
                         reasonMenu.close()
                         return
                     end
@@ -34,10 +34,9 @@ local function IssueBill()
                     if player ~= -1 and distance <= 3.0 then
                         local playerId = GetPlayerServerId(player)
                         TriggerServerEvent('esx_billing:sendBill', playerId, 'society_mechanic', reason, amount)
-                        ESX.ShowNotification(string.format("Bill issued successfully with reason: %s", reason))
-
+                        ESX.ShowNotification(string.format(TranslateCap('bill_issued'), reason), "success")
                     else
-                        ESX.ShowNotification('No player nearby')
+                        ESX.ShowNotification(TranslateCap('no_player_nearby'), "error")
                     end
 
                     reasonMenu.close()
@@ -53,11 +52,10 @@ local function IssueBill()
     )
 end
 
-
 local function ViewUnpaidBills()
     local bills = ESX.AwaitServerCallback('esx_mechanicjob:server:getSocietyBillsWithNames', 'society_mechanic')
     local elements = {}
-    for i=1, #bills, 1 do
+    for i = 1, #bills, 1 do
         elements[#elements + 1] = {
             label = string.format("%s - $%d", bills[i].fullName, bills[i].amount),
             value = bills[i].id
@@ -67,12 +65,12 @@ local function ViewUnpaidBills()
     ESX.UI.Menu.Open(
         'default', resourceName, 'unpaid_bills',
         {
-            title    = 'Unpaid Bills',
+            title    = TranslateCap('unpaid_bills'),
             align    = 'right',
             elements = elements
         },
         function(data, menu)
-            ESX.ShowNotification(string.format("Selected Bill ID: %s", data.current.value))
+            ESX.ShowNotification(string.format(TranslateCap('selected_bill_id'), data.current.value), "info")
         end,
         function(data, menu)
             menu.close()
@@ -80,17 +78,16 @@ local function ViewUnpaidBills()
     )
 end
 
-
 function OpenBillingMenu()
     local elements = {
-        {label = 'Issue Bill', value = 'issue_bill'},
-        {label = 'View Unpaid Bills', value = 'view_bills'}
+        { label = TranslateCap('issue_bill'), value = 'issue_bill' },
+        { label = TranslateCap('view_unpaid_bills'), value = 'view_bills' }
     }
 
     ESX.UI.Menu.Open(
         'default', resourceName, 'billing_menu',
         {
-            title    = 'Billing Menu',
+            title    = TranslateCap('billing_menu'),
             align    = 'right',
             elements = elements
         },

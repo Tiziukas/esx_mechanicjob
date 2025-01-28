@@ -7,9 +7,9 @@ local MAX_JOB_DISTANCE <const> = 15.0
 local MAX_VEHICLE_SPAWN_DISTANCE <const> = 30.0
 local JOB_COOLDOWN_TIME <const> = 60
 
-local function dropPlayer(_source, message)
+function dropPlayer(_source, message)
     local xPlayer = ESX.GetPlayerFromId(_source)
-    --xPlayer.kick("Cheating")
+    xPlayer.kick("Cheating")
     error(string.format('%s was dropped due to %s', GetPlayerName(_source), message))
 end
 
@@ -89,7 +89,7 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
     else
         distance = #(playerCoords - vec3(currentJob.dropOffPoint.x, currentJob.dropOffPoint.y, currentJob.dropOffPoint.z))
     end
-    print(distance)
+
     if distance > MAX_JOB_DISTANCE then
         return dropPlayer(_source, "Player was too far")
     end
@@ -102,9 +102,9 @@ RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
 
     local reward = Config.Rewards[currentJob.job.type]
     if currentJob.job.type == JOB_TYPE_REPAIR then
-        xPlayer.addMoney(reward)
+        xPlayer.addMoney(reward) -- Cash or bank add
     elseif currentJob.job.type == JOB_TYPE_TOW then
-        xPlayer.addMoney(reward)
+        xPlayer.addMoney(reward)-- Cash or bank add
     else
         return dropPlayer(_source, "Unknown job type.")
     end

@@ -1,16 +1,15 @@
 ESX.RegisterServerCallback('esx_mechanicjob:getPlayerInventory', function(source, cb)
-	local xPlayer    = ESX.GetPlayerFromId(source)
-	local items      = xPlayer.inventory
-
-	cb({items = items})
+    local source <const> = source
+    local xPlayer <const> = ESX.GetPlayerFromId(source)
+    cb({items = xPlayer.inventory})
 end)
 
 ESX.RegisterServerCallback('esx_mechanicjob:getStockItems', function(source, cb)
     local source <const> = source
     local xPlayer <const> = ESX.GetPlayerFromId(source)
-    
+
     if xPlayer.job.name ~= 'mechanic' then
-        return DropPlayer(source, "Cheater")
+        return dropPlayer(source, TranslateCap('unauthorized_access'))
     end
 
     TriggerEvent('esx_addoninventory:getSharedInventory', 'society_mechanic', function(inventory)
@@ -21,22 +20,26 @@ end)
 RegisterServerEvent('esx_mechanicjob:putStockItems', function(itemName, count)
     local source <const> = source
     local xPlayer <const> = ESX.GetPlayerFromId(source)
-    
+
     if xPlayer.job.name ~= 'mechanic' then
-        return DropPlayer(source, "Cheater")
+        return dropPlayer(source, TranslateCap('unauthorized_access'))
+    end
+
+    if type(itemName) ~= 'string' or type(count) ~= 'number' or count <= 0 then
+        return xPlayer.showNotification(TranslateCap('invalid_parameters'))
     end
 
     TriggerEvent('esx_addoninventory:getSharedInventory', 'society_mechanic', function(inventory)
         local item = inventory.getItem(itemName)
         local playerItemCount = xPlayer.getInventoryItem(itemName).count
 
-        if count <= 0 or count > playerItemCount then
-            return xPlayer.showNotification('Invalid quantity or insufficient items.')
+        if not item or playerItemCount < count then
+            return xPlayer.showNotification(TranslateCap('insufficient_items'))
         end
 
         xPlayer.removeInventoryItem(itemName, count)
         inventory.addItem(itemName, count)
-        xPlayer.showNotification(string.format("%d %s have been deposited.", count, item.label))
+        xPlayer.showNotification(TranslateCap('item_deposited', count, item.label))
     end)
 end)
 
@@ -45,22 +48,26 @@ RegisterServerEvent('esx_mechanicjob:getStockItem', function(itemName, count)
     local xPlayer <const> = ESX.GetPlayerFromId(source)
 
     if xPlayer.job.name ~= 'mechanic' then
-        return DropPlayer(source, "Cheater")
+        return dropPlayer(source, TranslateCap('unauthorized_access'))
+    end
+
+    if type(itemName) ~= 'string' or type(count) ~= 'number' or count <= 0 then
+        return xPlayer.showNotification(TranslateCap('invalid_parameters'))
     end
 
     TriggerEvent('esx_addoninventory:getSharedInventory', 'society_mechanic', function(inventory)
         local item = inventory.getItem(itemName)
 
-        if count <= 0 or item.count < count then
-            return xPlayer.showNotification('Invalid quantity or not enough items in the stock.')
+        if not item or item.count < count then
+            return xPlayer.showNotification(TranslateCap('insufficient_stock'))
         end
 
         if not xPlayer.canCarryItem(itemName, count) then
-            return xPlayer.showNotification('You cannot carry this amount of items.')
+            return xPlayer.showNotification(TranslateCap('cannot_carry'))
         end
 
         inventory.removeItem(itemName, count)
         xPlayer.addInventoryItem(itemName, count)
-        xPlayer.showNotification(string.format("%d %s have been withdrawn.", count, item.label))
+        xPlayer.showNotification(TranslateCap('item_withdrawn', count, item.label))
     end)
 end)

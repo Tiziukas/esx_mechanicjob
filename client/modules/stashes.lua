@@ -5,11 +5,10 @@ local function OpenPutStocksMenu()
     local inventory = ESX.AwaitServerCallback('esx_mechanicjob:getPlayerInventory')
     local elements = {}
 
-    -- Add a header element
     table.insert(elements, {
         unselectable = true,
         icon = 'fas fa-box',
-        title = 'Inventory'
+        title = TranslateCap('inventory')
     })
 
     for _, item in ipairs(inventory.items) do
@@ -28,15 +27,15 @@ local function OpenPutStocksMenu()
         local inputElements = {
             {
                 icon = '',
-                title = 'Amount to Deposit',
+                title = TranslateCap('amount_to_deposit'),
                 input = true,
                 inputType = 'number',
-                inputPlaceholder = 'Enter amount...',
+                inputPlaceholder = TranslateCap('enter_amount'),
                 name = 'deposit_amount'
             },
             {
                 icon = 'fas fa-check',
-                title = 'Submit',
+                title = TranslateCap('submit'),
                 name = 'submit'
             }
         }
@@ -46,27 +45,21 @@ local function OpenPutStocksMenu()
                 local count = tonumber(inputMenu.eles[1].inputValue)
 
                 if count == nil or count <= 0 then
-                    ESX.ShowNotification('Bad Quantity')
-                else
-                    ESX.CloseContext()
-                    TriggerServerEvent('esx_mechanicjob:putStockItems', itemName, count)
-                    Wait(1000)
-                    OpenPutStocksMenu()
-                end
+                    return ESX.ShowNotification(TranslateCap('bad_quantity'))
+                end 
+                ESX.CloseContext()
+                TriggerServerEvent('esx_mechanicjob:putStockItems', itemName, count)
+                Wait(1000)
+                OpenPutStocksMenu()
             end
-        end, function()
-            
         end)
-    end, function()
-        
     end)
 end
-
 
 local function OpenGetStocksMenu()
     local items = ESX.AwaitServerCallback('esx_mechanicjob:getStockItems')
     local elements = {
-        { unselectable = true, icon = 'fas fa-box', title = 'Mech stock' }
+        { unselectable = true, icon = 'fas fa-box', title = TranslateCap('mech_stock') }
     }
 
     for _, item in ipairs(items) do
@@ -82,22 +75,22 @@ local function OpenGetStocksMenu()
 
         local elements2 = {
             { unselectable = true, icon = 'fas fa-box', title = element.title },
-            { title = 'Amount', input = true, inputType = 'number', inputMin = 1, inputMax = 100, inputPlaceholder = 'Amount to withdraw..' },
-            { icon = 'fas fa-check-double', title = 'Confirm', value = 'confirm' }
+            { title = TranslateCap('amount'), input = true, inputType = 'number', inputMin = 1, inputMax = 100, inputPlaceholder = TranslateCap('amount_to_withdraw') },
+            { icon = 'fas fa-check-double', title = TranslateCap('confirm'), value = 'confirm' }
         }
 
         ESX.OpenContext("right", elements2, function(menu2, element2)
             local count = tonumber(menu2.eles[2].inputValue)
 
             if count == nil then
-                ESX.ShowNotification('Invalid quantity')
-            else
-                ESX.CloseContext()
-                TriggerServerEvent('esx_mechanicjob:getStockItem', itemName, count)
-
-                Wait(1000)
-                OpenGetStocksMenu()
+                return ESX.ShowNotification(TranslateCap('invalid_quantity'))
             end
+
+            ESX.CloseContext()
+            TriggerServerEvent('esx_mechanicjob:getStockItem', itemName, count)
+
+            Wait(1000)
+            OpenGetStocksMenu()
         end)
     end)
 end
@@ -106,12 +99,12 @@ local function OpenMechanicStashMenu()
     local elements = {
         {
             icon = 'fas fa-box',
-            title = 'Place Item',
+            title = TranslateCap('place_item'),
             value = 'put_stash'
         },
         {
             icon = 'fas fa-box-open',
-            title = 'Get Item',
+            title = TranslateCap('get_item'),
             value = 'get_stash'
         }
     }
@@ -122,7 +115,6 @@ local function OpenMechanicStashMenu()
         elseif element.value == 'get_stash' then
             OpenGetStocksMenu()
         end
-    end, function()
     end)
 end
 
@@ -139,7 +131,7 @@ CreateThread(function()
             enter = function()
                 canInteract = true
                 local key = ESX.GetInteractKey()
-                ESX.TextUI(string.format("Press [%s] to open mechanic stash", key))                
+                ESX.TextUI(string.format(TranslateCap('press_to_open_mechanic_stash'), key))
             end,
             leave = function()
                 canInteract = false
