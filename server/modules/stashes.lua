@@ -1,14 +1,16 @@
 ESX.RegisterServerCallback('esx_mechanicjob:getPlayerInventory', function(source, cb)
-    local source <const> = source
-    local xPlayer <const> = ESX.GetPlayerFromId(source)
-    cb({items = xPlayer.inventory})
+    local _source <const> = source
+    local xPlayer <const> = ESX.Player(_source)
+
+    cb({items = xPlayer.getInventory(true)})
 end)
 
 ESX.RegisterServerCallback('esx_mechanicjob:getStockItems', function(source, cb)
-    local source <const> = source
-    local xPlayer <const> = ESX.GetPlayerFromId(source)
+    local _source <const> = source
+    local xPlayer <const> = ESX.Player(_source)
+    local xPlayerJob = xPlayer.getJob()
 
-    if xPlayer.job.name ~= 'mechanic' then
+    if xPlayerJob.name ~= 'mechanic' then
         return dropPlayer(source, TranslateCap('unauthorized_access'))
     end
 
@@ -18,10 +20,11 @@ ESX.RegisterServerCallback('esx_mechanicjob:getStockItems', function(source, cb)
 end)
 
 RegisterServerEvent('esx_mechanicjob:putStockItems', function(itemName, count)
-    local source <const> = source
-    local xPlayer <const> = ESX.GetPlayerFromId(source)
+    local _source <const> = source
+    local xPlayer <const> = ESX.Player(_source)
+    local xPlayerJob = xPlayer.getJob()
 
-    if xPlayer.job.name ~= 'mechanic' then
+    if xPlayerJob.name ~= 'mechanic' then
         return dropPlayer(source, TranslateCap('unauthorized_access'))
     end
 
@@ -44,10 +47,11 @@ RegisterServerEvent('esx_mechanicjob:putStockItems', function(itemName, count)
 end)
 
 RegisterServerEvent('esx_mechanicjob:getStockItem', function(itemName, count)
-    local source <const> = source
-    local xPlayer <const> = ESX.GetPlayerFromId(source)
+    local _source <const> = source
+    local xPlayer <const> = ESX.Player(_source)
+    local xPlayerJob = xPlayer.getJob()
 
-    if xPlayer.job.name ~= 'mechanic' then
+    if xPlayerJob.name ~= 'mechanic' then
         return dropPlayer(source, TranslateCap('unauthorized_access'))
     end
 

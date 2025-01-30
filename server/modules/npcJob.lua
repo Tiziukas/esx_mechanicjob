@@ -8,7 +8,7 @@ local MAX_VEHICLE_SPAWN_DISTANCE <const> = 30.0
 local JOB_COOLDOWN_TIME <const> = 60
 
 function dropPlayer(_source, message)
-    local xPlayer = ESX.GetPlayerFromId(_source)
+    local xPlayer = ESX.Player(_source)
     xPlayer.kick("Cheating")
     error(string.format('%s was dropped due to %s', GetPlayerName(_source), message))
 end
@@ -48,11 +48,11 @@ end
 
 RegisterNetEvent('esx_mechanicjob:server:startJob', function()
     local _source <const> = source
-    local xPlayer <const> = ESX.GetPlayerFromId(_source)
-
+    local xPlayer <const> = ESX.Player(_source)
+    local xPlayerJob = xPlayer.getJob()
     if not xPlayer then return end
 
-    if not xPlayer.job or xPlayer.job.name ~= "mechanic" then
+    if not xPlayerJob or xPlayerJob.name ~= "mechanic" then
         return dropPlayer(_source, "You are not a mechanic!")
     end
     local job = Config.NPCJobs[math.random(#Config.NPCJobs)]
@@ -65,12 +65,13 @@ end)
 
 RegisterNetEvent('esx_mechanicjob:server:completeJob', function(job)
     local _source <const> = source
-    local xPlayer <const> = ESX.GetPlayerFromId(_source)
+    local xPlayer <const> = ESX.Player(_source)
+    local xPlayerJob = xPlayer.getJob()
     local distance
 
     if not xPlayer then return end
 
-    if not xPlayer.job or xPlayer.job.name ~= "mechanic" then
+    if not xPlayerJob or xPlayerJob.name ~= "mechanic" then
         return dropPlayer(_source, "Not Mechanic")
     end
 
